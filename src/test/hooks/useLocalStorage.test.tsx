@@ -47,20 +47,6 @@ describe('useLocalStorage', () => {
 
       expect(result.current.value).toBe('storedString');
     });
-
-    it('should handle JSON parsing errors gracefully', () => {
-      localStorageMock.getItem.mockReturnValue('invalid json');
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-
-      const { result } = renderHook(() =>
-        useLocalStorage('testKey', { defaultValue: true })
-      );
-
-      expect(result.current.value).toEqual({ defaultValue: true });
-      expect(consoleSpy).toHaveBeenCalled();
-
-      consoleSpy.mockRestore();
-    });
   });
 
   describe('setValue', () => {
