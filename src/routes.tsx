@@ -5,6 +5,7 @@ import { ScreenLayout } from './core/components/screen-layout';
 
 // Importar rutas modulares
 import { adminRoutes } from './modules/administator-panel/admin.routes';
+import { authRoutes } from './modules/auth/auth.routes';
 import { calendarEventsRoutes } from './modules/calendar-events/calendar-events.routes';
 import { checkoutRoutes } from './modules/checkout/checkout.routes';
 import { culturalPlacesRoutes } from './modules/cultural-places/cultural-places.routes';
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: adminRoutes,
   },
+  ...authRoutes,
   {
     path: '*',
     element: <NotFoundPage />,
