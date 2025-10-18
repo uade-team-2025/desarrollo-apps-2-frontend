@@ -35,12 +35,15 @@ const TestComponent = () => {
       <div data-testid="userName">{auth.user?.name || 'null'}</div>
       <button
         onClick={() =>
-          auth.login({
-            id: '1',
-            name: 'Test User',
-            email: 'test@example.com',
-            role: UserRole.USER,
-          })
+          auth.login(
+            {
+              id: '1',
+              name: 'Test User',
+              email: 'test@example.com',
+              role: UserRole.USER,
+            },
+            'test-token-123'
+          )
         }
       >
         Login

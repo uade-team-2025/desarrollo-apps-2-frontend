@@ -100,6 +100,7 @@ describe('CartContext', () => {
         role: 'user',
       },
       isLogged: true,
+      token: 'mock-token-123',
       role: 'user',
       isAdmin: false,
       isSupervisor: false,
@@ -148,6 +149,7 @@ describe('CartContext', () => {
       mockUseAuth.mockReturnValue({
         user: null,
         isLogged: false,
+        token: null,
         role: null,
         isAdmin: false,
         isSupervisor: false,
@@ -199,6 +201,7 @@ describe('CartContext', () => {
       mockUseAuth.mockReturnValue({
         user: null,
         isLogged: false,
+        token: null,
         role: null,
         isAdmin: false,
         isSupervisor: false,

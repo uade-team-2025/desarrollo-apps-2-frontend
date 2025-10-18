@@ -37,7 +37,9 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         email: data.email,
         role: (data.role as any) || 'user',
       };
-      login(user);
+      // Para login con email, generamos un token dummy o usamos el que viene del servidor
+      const token = data.token || 'legacy-email-login-token';
+      login(user, token);
       onClose();
     },
     onError: (err: any) => {

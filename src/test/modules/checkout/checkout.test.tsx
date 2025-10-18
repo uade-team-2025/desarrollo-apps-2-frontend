@@ -139,6 +139,7 @@ describe('CheckoutPage', () => {
     mockUseAuth.mockReturnValue({
       user: mockUser,
       isLogged: true,
+      token: 'mock-token-123',
       login: jest.fn(),
       logout: jest.fn(),
       role: 'user',
@@ -181,6 +182,7 @@ describe('CheckoutPage', () => {
     mockUseAuth.mockReturnValue({
       user: null,
       isLogged: false,
+      token: null,
       login: jest.fn(),
       logout: jest.fn(),
       role: null,
@@ -275,6 +277,7 @@ describe('CheckoutPage', () => {
     mockUseAuth.mockReturnValue({
       user: { ...mockUser, id: undefined as any },
       isLogged: true,
+      token: 'mock-token-123',
       login: jest.fn(),
       logout: jest.fn(),
       role: 'user',

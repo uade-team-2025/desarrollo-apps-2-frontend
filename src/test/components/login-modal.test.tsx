@@ -35,12 +35,15 @@ const TestLoginModal = ({
         <p>Selecciona tu rol para continuar:</p>
         <button
           onClick={() => {
-            mockLogin({
-              id: 'admin_456',
-              name: 'María Admin',
-              email: 'maria@admin.com',
-              role: 'admin',
-            }, 'admin-token-123');
+            mockLogin(
+              {
+                id: 'admin_456',
+                name: 'María Admin',
+                email: 'maria@admin.com',
+                role: 'admin',
+              },
+              'admin-token-123'
+            );
             onClose();
           }}
         >
@@ -48,12 +51,15 @@ const TestLoginModal = ({
         </button>
         <button
           onClick={() => {
-            mockLogin({
-              id: '68c2dd60fb172823da61eb92',
-              name: 'Juan Pérez',
-              email: 'juan@usuario.com',
-              role: 'user',
-            }, 'user-token-456');
+            mockLogin(
+              {
+                id: '68c2dd60fb172823da61eb92',
+                name: 'Juan Pérez',
+                email: 'juan@usuario.com',
+                role: 'user',
+              },
+              'user-token-456'
+            );
             onClose();
           }}
         >
@@ -61,12 +67,15 @@ const TestLoginModal = ({
         </button>
         <button
           onClick={() => {
-            mockLogin({
-              id: 'supervisor_789',
-              name: 'Carlos Operador',
-              email: 'carlos@operador.com',
-              role: 'supervisor',
-            }, 'supervisor-token-789');
+            mockLogin(
+              {
+                id: 'supervisor_789',
+                name: 'Carlos Operador',
+                email: 'carlos@operador.com',
+                role: 'supervisor',
+              },
+              'supervisor-token-789'
+            );
             onClose();
           }}
         >
@@ -135,12 +144,15 @@ describe('LoginModal', () => {
     fireEvent.click(adminButton);
 
     expect(mockLogin).toHaveBeenCalledTimes(1);
-    expect(mockLogin).toHaveBeenCalledWith({
-      id: 'admin_456',
-      name: 'María Admin',
-      email: 'maria@admin.com',
-      role: 'admin',
-    }, 'admin-token-123');
+    expect(mockLogin).toHaveBeenCalledWith(
+      {
+        id: 'admin_456',
+        name: 'María Admin',
+        email: 'maria@admin.com',
+        role: 'admin',
+      },
+      'admin-token-123'
+    );
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -153,12 +165,15 @@ describe('LoginModal', () => {
     fireEvent.click(userButton);
 
     expect(mockLogin).toHaveBeenCalledTimes(1);
-    expect(mockLogin).toHaveBeenCalledWith({
-      id: '68c2dd60fb172823da61eb92',
-      name: 'Juan Pérez',
-      email: 'juan@usuario.com',
-      role: 'user',
-    }, 'user-token-456');
+    expect(mockLogin).toHaveBeenCalledWith(
+      {
+        id: '68c2dd60fb172823da61eb92',
+        name: 'Juan Pérez',
+        email: 'juan@usuario.com',
+        role: 'user',
+      },
+      'user-token-456'
+    );
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -171,12 +186,15 @@ describe('LoginModal', () => {
     fireEvent.click(supervisorButton);
 
     expect(mockLogin).toHaveBeenCalledTimes(1);
-    expect(mockLogin).toHaveBeenCalledWith({
-      id: 'supervisor_789',
-      name: 'Carlos Operador',
-      email: 'carlos@operador.com',
-      role: 'supervisor',
-    }, 'supervisor-token-789');
+    expect(mockLogin).toHaveBeenCalledWith(
+      {
+        id: 'supervisor_789',
+        name: 'Carlos Operador',
+        email: 'carlos@operador.com',
+        role: 'supervisor',
+      },
+      'supervisor-token-789'
+    );
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
