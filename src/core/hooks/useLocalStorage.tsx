@@ -19,7 +19,16 @@ function useLocalStorage<T>(
       if (typeof initialValue === 'string') {
         return item ?? initialValue ?? null;
       }
-      return item ? JSON.parse(item) : (initialValue ?? null);
+      // Si el item existe, intentar parsearlo como JSON
+      if (item) {
+        try {
+          return JSON.parse(item);
+        } catch {
+          // Si falla el parsing, es probablemente un string simple
+          return item as StorageValue<T>;
+        }
+      }
+      return initialValue ?? null;
     } catch (err) {
       console.error('Error al inicializar localStorage:', err);
       return initialValue ?? null;

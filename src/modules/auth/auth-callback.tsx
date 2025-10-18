@@ -47,7 +47,7 @@ const AuthCallback = () => {
             : undefined,
         };
 
-        login(userData);
+        login(userData, token);
       } catch (err) {
         console.error('Error during authentication callback:', err);
       } finally {

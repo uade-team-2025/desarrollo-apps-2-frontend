@@ -14,11 +14,12 @@ export type UserRoleType = (typeof UserRole)[keyof typeof UserRole];
 interface AuthContextType {
   isLogged: boolean;
   user: User | null;
+  token: string | null;
   role: UserRoleType | null;
   isAdmin: boolean;
   isSupervisor: boolean;
   isUser: boolean;
-  login: (userData: User) => void;
+  login: (userData: User, token: string) => void;
   logout: () => void;
 }
 
@@ -36,27 +37,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   } = useLocalStorage<User | null>('auth_user', null);
   const { value: storedIsLogged, setValue: setStoredIsLogged } =
     useLocalStorage<boolean>('auth_isLogged', false);
+  const { value: storedToken, setValue: setStoredToken } = useLocalStorage<
+    string | null
+  >('auth_token', '');
 
   const [user, setUser] = useState<User | null>(storedUser);
   const [isLogged, setIsLogged] = useState<boolean>(storedIsLogged);
+  const [token, setToken] = useState<string | null>(storedToken || null);
 
-  const login = (userData: User) => {
+  const login = (userData: User, token: string) => {
     setUser(userData);
     setIsLogged(true);
     setStoredUser(userData);
     setStoredIsLogged(true);
+    setToken(token);
+    setStoredToken(token);
   };
 
   const logout = () => {
     setUser(null);
     setIsLogged(false);
+    setToken(null);
     removeStoredUser();
     setStoredIsLogged(false);
+    setStoredToken(null);
   };
 
   const value: AuthContextType = {
     isLogged,
     user,
+    token,
     role: user?.role || null,
     isAdmin: user?.role === UserRole.ADMIN,
     isSupervisor: user?.role === UserRole.SUPERVISOR,

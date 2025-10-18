@@ -40,7 +40,7 @@ const TestLoginModal = ({
               name: 'María Admin',
               email: 'maria@admin.com',
               role: 'admin',
-            });
+            }, 'admin-token-123');
             onClose();
           }}
         >
@@ -53,7 +53,7 @@ const TestLoginModal = ({
               name: 'Juan Pérez',
               email: 'juan@usuario.com',
               role: 'user',
-            });
+            }, 'user-token-456');
             onClose();
           }}
         >
@@ -66,7 +66,7 @@ const TestLoginModal = ({
               name: 'Carlos Operador',
               email: 'carlos@operador.com',
               role: 'supervisor',
-            });
+            }, 'supervisor-token-789');
             onClose();
           }}
         >
@@ -140,7 +140,7 @@ describe('LoginModal', () => {
       name: 'María Admin',
       email: 'maria@admin.com',
       role: 'admin',
-    });
+    }, 'admin-token-123');
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -158,7 +158,7 @@ describe('LoginModal', () => {
       name: 'Juan Pérez',
       email: 'juan@usuario.com',
       role: 'user',
-    });
+    }, 'user-token-456');
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -176,7 +176,7 @@ describe('LoginModal', () => {
       name: 'Carlos Operador',
       email: 'carlos@operador.com',
       role: 'supervisor',
-    });
+    }, 'supervisor-token-789');
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 

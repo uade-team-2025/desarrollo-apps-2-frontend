@@ -36,7 +36,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       body: { email },
     },
     onSuccess: (user) => {
-      login(user);
+      login(user, '');
       onClose();
     },
   });

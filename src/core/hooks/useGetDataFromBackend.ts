@@ -34,7 +34,7 @@ export function useGetDataFromBackend<T>({
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(executeAutomatically);
   const [error, setError] = useState<string | null>(null);
-  const { role } = useAuth();
+  const { role, token } = useAuth();
 
   const callback = useCallback(async () => {
     setLoading(true);
@@ -48,7 +48,7 @@ export function useGetDataFromBackend<T>({
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
-          'x-user-role': role || 'unlogged',
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       };
       const response: AxiosResponse<T> = await axios(config);
@@ -71,7 +71,7 @@ export function useGetDataFromBackend<T>({
     } finally {
       setLoading(false);
     }
-  }, [url, options, role, onSuccess, onError]);
+  }, [url, options, role, onSuccess, onError, token]);
 
   useEffect(() => {
     if (executeAutomatically) {

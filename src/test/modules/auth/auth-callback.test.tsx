@@ -50,13 +50,16 @@ describe('AuthCallback', () => {
     expect(
       screen.getByText('Completando el proceso de login...')
     ).toBeInTheDocument();
-    expect(mockLogin).toHaveBeenCalledWith({
-      id: '1234567890',
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'user',
-      createdAt: expect.any(String),
-    });
+    expect(mockLogin).toHaveBeenCalledWith(
+      {
+        id: '1234567890',
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 'user',
+        createdAt: expect.any(String),
+      },
+      simpleJWT
+    );
   });
 
   it('shows loading message even when no token is provided', async () => {
@@ -83,14 +86,17 @@ describe('AuthCallback', () => {
       screen.getByText('Completando el proceso de login...')
     ).toBeInTheDocument();
 
-    // Verificar que se llama a login con los datos correctos del JWT
-    expect(mockLogin).toHaveBeenCalledWith({
-      id: '68c2dd60fb172823da61eb92',
-      name: 'Juan Pérez',
-      email: 'tomasschuster10@gmail.com',
-      role: 'user',
-      createdAt: expect.any(String),
-    });
+    // Verificar que se llama a login con los datos correctos del JWT y el token
+    expect(mockLogin).toHaveBeenCalledWith(
+      {
+        id: '68c2dd60fb172823da61eb92',
+        name: 'Juan Pérez',
+        email: 'tomasschuster10@gmail.com',
+        role: 'user',
+        createdAt: expect.any(String),
+      },
+      mockJWT
+    );
   });
 
   it('shows loading message even with invalid JWT tokens', async () => {
