@@ -23,6 +23,7 @@ export function useGetDataFromBackend<T>({
   onSuccess,
   onError,
   timeout = 30000,
+  pollingIntervalSeconds,
 }: {
   url: string;
   options: UseApiRequestOptions;
@@ -30,6 +31,7 @@ export function useGetDataFromBackend<T>({
   onSuccess?: (data: T) => void;
   onError?: (error: any) => void;
   timeout?: number;
+  pollingIntervalSeconds?: number;
 }): UseApiRequestReturn<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(executeAutomatically);
@@ -77,6 +79,25 @@ export function useGetDataFromBackend<T>({
     if (executeAutomatically) {
       callback();
     }
+
+    // Configurar polling si se especifica un intervalo
+    let pollingInterval: NodeJS.Timeout | null = null;
+    if (
+      executeAutomatically &&
+      pollingIntervalSeconds &&
+      pollingIntervalSeconds > 0
+    ) {
+      pollingInterval = setInterval(() => {
+        callback();
+      }, pollingIntervalSeconds * 1000);
+    }
+
+    // Limpiar el intervalo al desmontar el componente
+    return () => {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    };
   }, [executeAutomatically]);
 
   return { data, loading, error, callback };

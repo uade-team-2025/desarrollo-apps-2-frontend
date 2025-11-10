@@ -22,14 +22,31 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+type BikeStation = {
+  stationId: string;
+  lt: number;
+  lg: number;
+  count: number;
+};
+
+type Truck = {
+  truckId: string;
+  lat: number;
+  long: number;
+};
+
 type MapsProps = {
-  cardTitle: string;
+  cardTitle?: string;
   coordinates: { lat: number; lng: number; description: string };
+  stations?: BikeStation[];
+  trucks?: Truck[];
   mapsProps?: MapContainerProps;
 };
 
 export const Maps = ({
   coordinates,
+  stations = [],
+  trucks = [],
   mapsProps = {},
   cardTitle = '',
 }: MapsProps) => {
@@ -65,6 +82,97 @@ export const Maps = ({
           <Marker position={[coordinates.lat, coordinates.lng]}>
             <Popup>{coordinates.description}</Popup>
           </Marker>
+
+          {/* Mostrar estaciones de bicicleta */}
+          {stations &&
+            stations.length > 0 &&
+            stations.map((station) => {
+              const keyboardIcon = L.divIcon({
+                html: `<div style="
+                    font-size: 20px;
+                    color: white;
+                    background-color: ${station.count === 0 ? '#ff6565ff' : '#04BF8A'};
+                    border-radius: 50%;
+                    width: 32px;
+                    height: 32px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                  ">
+                    🚲
+                  </div>`,
+                className: '',
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+              });
+
+              return (
+                <Marker
+                  key={station.stationId}
+                  position={[station.lt, station.lg]}
+                  icon={keyboardIcon}
+                >
+                  <Popup>
+                    <Box>
+                      <Text fontWeight="bold">{station.stationId}</Text>
+                      <Text fontSize="sm">Bicicletas: {station.count}</Text>
+                    </Box>
+                  </Popup>
+                </Marker>
+              );
+            })}
+
+          {/* Mostrar camiones (trucks) */}
+          {trucks &&
+            trucks.length > 0 &&
+            trucks.map((truck) => {
+              // Validar que el truck tenga coordenadas válidas
+              if (
+                !truck ||
+                truck.lat === undefined ||
+                truck.long === undefined
+              ) {
+                return null;
+              }
+
+              const truckIcon = L.divIcon({
+                html: `<div style="
+                    font-size: 20px;
+                    color: white;
+                    background-color: #FF6B35;
+                    border-radius: 50%;
+                    width: 36px;
+                    height: 36px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                  ">
+                    🚚
+                  </div>`,
+                className: '',
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
+              });
+
+              return (
+                <Marker
+                  key={truck.truckId}
+                  position={[truck.lat, truck.long]}
+                  icon={truckIcon}
+                >
+                  <Popup>
+                    <Box>
+                      <Text fontWeight="bold">{truck.truckId}</Text>
+                      <Text fontSize="sm">
+                        Lat: {truck.lat.toFixed(4)}, Lng:{' '}
+                        {truck.long.toFixed(4)}
+                      </Text>
+                    </Box>
+                  </Popup>
+                </Marker>
+              );
+            })}
         </MapContainer>
       </Card.Body>
     </Card.Root>

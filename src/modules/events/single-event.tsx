@@ -10,7 +10,13 @@ import { EventAbout } from './components/event-about';
 import { EventCalendar } from './components/event-calendar';
 import { EventHeader } from './components/event-header';
 import { EventTickets } from './components/event-tickets';
-import { getEventById } from './single-event.api';
+import {
+  getEventById,
+  getMobilityStationsForEvent,
+  getTruckPositionsForEvent,
+  type BikeStation,
+  type Truck,
+} from './single-event.api';
 
 interface Event {
   _id: string;
@@ -54,6 +60,20 @@ export const SingleEvent = () => {
     executeAutomatically: !!id,
   });
 
+  const { data: mobilityStations } = useGetDataFromBackend<BikeStation[]>({
+    url: id ? getMobilityStationsForEvent(id) : '',
+    options: { method: 'GET' },
+    executeAutomatically: !!id,
+    pollingIntervalSeconds: 10,
+  });
+
+  const { data: truckPositions } = useGetDataFromBackend<Truck[]>({
+    url: id ? getTruckPositionsForEvent(id) : '',
+    options: { method: 'GET' },
+    executeAutomatically: !!id,
+    pollingIntervalSeconds: 10,
+  });
+
   if (loading) {
     return <LoadingIndicator text="Cargando evento..." />;
   }
@@ -81,9 +101,20 @@ export const SingleEvent = () => {
       />
 
       <Box mx="auto" px={4} position="relative">
+        <Stack mb={6} gap={6}>
+          <Maps
+            coordinates={{
+              lat: event.culturalPlaceId.contact.coordinates.lat,
+              lng: event.culturalPlaceId.contact.coordinates.lng,
+              description: event.culturalPlaceId.name,
+            }}
+            stations={mobilityStations || []}
+            trucks={truckPositions || []}
+          />
+          <EventAbout description={event.description} />
+        </Stack>
         <Grid templateColumns={{ base: '1fr', xl: '2fr 1fr' }} gap={6}>
           <VStack gap={6} align="stretch">
-            <EventAbout description={event.description} />
             <CulturalPlaceInfo
               name={event.culturalPlaceId.name}
               description={event.culturalPlaceId.description}
@@ -92,6 +123,7 @@ export const SingleEvent = () => {
               address={event.culturalPlaceId.contact.address}
               phone={event.culturalPlaceId.contact.phone}
             />
+
             <EventTickets
               eventId={event._id}
               eventName={event.name}
@@ -105,14 +137,6 @@ export const SingleEvent = () => {
 
           <VStack gap={6} align="stretch">
             <EventCalendar eventDate={event.date} eventName={event.name} />
-            <Maps
-              cardTitle="Ubicación del evento"
-              coordinates={{
-                lat: event.culturalPlaceId.contact.coordinates.lat,
-                lng: event.culturalPlaceId.contact.coordinates.lng,
-                description: event.culturalPlaceId.name,
-              }}
-            />
           </VStack>
         </Grid>
       </Box>
