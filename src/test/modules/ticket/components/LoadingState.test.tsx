@@ -34,7 +34,9 @@ describe('LoadingState', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Por favor espere mientras validamos su código QR')).toBeInTheDocument();
+    expect(
+      screen.getByText('Por favor espere mientras validamos su código QR')
+    ).toBeInTheDocument();
   });
 
   it('renders spinner component', () => {
@@ -45,7 +47,9 @@ describe('LoadingState', () => {
     );
 
     // Check if spinner exists by looking for the Chakra UI Spinner element
-    const spinner = document.querySelector('[data-testid="spinner"], .chakra-spinner, [role="status"]');
+    const spinner = document.querySelector(
+      '[data-testid="spinner"], .chakra-spinner, [role="status"]'
+    );
     expect(spinner || screen.getByText('Verificando ticket...')).toBeTruthy();
   });
 
@@ -59,7 +63,9 @@ describe('LoadingState', () => {
     // Verify main content elements are present
     expect(screen.getByText('Verificando Ticket')).toBeInTheDocument();
     expect(screen.getByText('Verificando ticket...')).toBeInTheDocument();
-    expect(screen.getByText('Por favor espere mientras validamos su código QR')).toBeInTheDocument();
+    expect(
+      screen.getByText('Por favor espere mientras validamos su código QR')
+    ).toBeInTheDocument();
   });
 
   it('renders without crashing', () => {
@@ -94,10 +100,10 @@ describe('LoadingState', () => {
     const expectedTexts = [
       'Verificando Ticket',
       'Verificando ticket...',
-      'Por favor espere mientras validamos su código QR'
+      'Por favor espere mientras validamos su código QR',
     ];
 
-    expectedTexts.forEach(text => {
+    expectedTexts.forEach((text) => {
       expect(screen.getByText(text)).toBeInTheDocument();
     });
   });
@@ -112,9 +118,11 @@ describe('LoadingState', () => {
     // Check for loading indicators - either spinner or loading text
     const loadingIndicators = [
       screen.queryByText('Verificando ticket...'),
-      screen.queryByText('Por favor espere mientras validamos su código QR')
+      screen.queryByText('Por favor espere mientras validamos su código QR'),
     ];
 
-    expect(loadingIndicators.some(indicator => indicator !== null)).toBe(true);
+    expect(loadingIndicators.some((indicator) => indicator !== null)).toBe(
+      true
+    );
   });
 });

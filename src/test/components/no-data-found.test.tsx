@@ -30,7 +30,9 @@ describe('NoDataFound', () => {
       render(<NoDataFound />);
 
       expect(screen.getByText('No hay datos disponibles')).toBeInTheDocument();
-      expect(screen.getByText('No se encontraron elementos para mostrar.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No se encontraron elementos para mostrar.')
+      ).toBeInTheDocument();
       expect(screen.getByTestId('lottie-animation')).toBeInTheDocument();
     });
 
@@ -54,17 +56,16 @@ describe('NoDataFound', () => {
       );
 
       expect(screen.getByText('Custom Title')).toBeInTheDocument();
-      expect(screen.getByText('Custom message for no data')).toBeInTheDocument();
+      expect(
+        screen.getByText('Custom message for no data')
+      ).toBeInTheDocument();
     });
 
     it('should render action button when provided', () => {
       const mockAction = jest.fn();
 
       render(
-        <NoDataFound
-          actionLabel="Create New Item"
-          onAction={mockAction}
-        />
+        <NoDataFound actionLabel="Create New Item" onAction={mockAction} />
       );
 
       const actionButton = screen.getByText('Create New Item');
@@ -144,12 +145,7 @@ describe('NoDataFound', () => {
     it('should call onAction when action button is clicked', () => {
       const mockAction = jest.fn();
 
-      render(
-        <NoDataFound
-          actionLabel="Click Me"
-          onAction={mockAction}
-        />
-      );
+      render(<NoDataFound actionLabel="Click Me" onAction={mockAction} />);
 
       const button = screen.getByText('Click Me');
 
@@ -170,19 +166,18 @@ describe('NoDataFound', () => {
         />
       );
 
-      expect(screen.getByRole('heading', { name: 'No Users Found' })).toBeInTheDocument();
-      expect(screen.getByText('There are currently no users in the system.')).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'No Users Found' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('There are currently no users in the system.')
+      ).toBeInTheDocument();
     });
 
     it('should have clickable button when action is provided', () => {
       const mockAction = jest.fn();
 
-      render(
-        <NoDataFound
-          actionLabel="Add User"
-          onAction={mockAction}
-        />
-      );
+      render(<NoDataFound actionLabel="Add User" onAction={mockAction} />);
 
       const button = screen.getByRole('button', { name: 'Add User' });
       expect(button).toBeInTheDocument();
@@ -201,12 +196,7 @@ describe('NoDataFound', () => {
     it('should render divider when action button is present', () => {
       const mockAction = jest.fn();
 
-      render(
-        <NoDataFound
-          actionLabel="Action"
-          onAction={mockAction}
-        />
-      );
+      render(<NoDataFound actionLabel="Action" onAction={mockAction} />);
 
       // The divider is rendered as part of the layout when action button exists
       expect(screen.getByText('Action')).toBeInTheDocument();
@@ -217,7 +207,9 @@ describe('NoDataFound', () => {
 
       // Only title and message should be present, no action button or divider
       expect(screen.getByText('No hay datos disponibles')).toBeInTheDocument();
-      expect(screen.getByText('No se encontraron elementos para mostrar.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No se encontraron elementos para mostrar.')
+      ).toBeInTheDocument();
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
   });

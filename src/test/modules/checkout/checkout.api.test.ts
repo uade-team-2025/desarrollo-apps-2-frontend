@@ -1,8 +1,11 @@
-import { createTicketUrl, purchaseTicketUrl } from '../../../modules/checkout/checkout.api';
+import {
+  createTicketUrl,
+  purchaseTicketUrl,
+} from '../../../modules/checkout/checkout.api';
 
 // Mock API_BASE_URL
 jest.mock('../../../core/config/api.config', () => ({
-  API_BASE_URL: 'https://api.example.com'
+  API_BASE_URL: 'https://api.example.com',
 }));
 
 describe('checkout.api', () => {

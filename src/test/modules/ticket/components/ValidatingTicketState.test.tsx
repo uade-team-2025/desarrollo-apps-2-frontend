@@ -104,7 +104,9 @@ describe('ValidatingTicketState', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Por favor espere mientras procesamos su ticket')).toBeInTheDocument();
+    expect(
+      screen.getByText('Por favor espere mientras procesamos su ticket')
+    ).toBeInTheDocument();
   });
 
   it('shows ticket details section header', () => {
@@ -130,7 +132,7 @@ describe('ValidatingTicketState', () => {
       screen.queryByText('Por favor espere mientras procesamos su ticket'),
     ];
 
-    expect(loadingElements.some(element => element !== null)).toBe(true);
+    expect(loadingElements.some((element) => element !== null)).toBe(true);
   });
 
   it('handles different ticket types', () => {
@@ -191,8 +193,12 @@ describe('ValidatingTicketState', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('event-with-very-long-identifier-1234567890')).toBeInTheDocument();
-    expect(screen.getByText('user-with-very-long-identifier-abcdefghij')).toBeInTheDocument();
+    expect(
+      screen.getByText('event-with-very-long-identifier-1234567890')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('user-with-very-long-identifier-abcdefghij')
+    ).toBeInTheDocument();
   });
 
   it('handles special characters in ticket data', () => {
@@ -252,7 +258,9 @@ describe('ValidatingTicketState', () => {
     expect(screen.getByText('⏳ EN PROCESO')).toBeInTheDocument();
     expect(screen.getByText('VALIDACIÓN EN CURSO')).toBeInTheDocument();
     expect(screen.getByText('Confirmando asistencia...')).toBeInTheDocument();
-    expect(screen.getByText('Por favor espere mientras procesamos su ticket')).toBeInTheDocument();
+    expect(
+      screen.getByText('Por favor espere mientras procesamos su ticket')
+    ).toBeInTheDocument();
   });
 
   it('handles empty or unusual ticket data gracefully', () => {

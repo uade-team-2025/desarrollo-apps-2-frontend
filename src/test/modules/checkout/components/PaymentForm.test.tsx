@@ -50,7 +50,9 @@ describe('PaymentForm', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByPlaceholderText('1234 5678 9012 3456')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('1234 5678 9012 3456')
+    ).toBeInTheDocument();
     expect(screen.getByText('Número de Tarjeta')).toBeInTheDocument();
   });
 
@@ -61,7 +63,9 @@ describe('PaymentForm', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByPlaceholderText('Como aparece en la tarjeta')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Como aparece en la tarjeta')
+    ).toBeInTheDocument();
     expect(screen.getByText('Nombre del Titular')).toBeInTheDocument();
   });
 
@@ -135,7 +139,10 @@ describe('PaymentForm', () => {
     const cardInput = screen.getByPlaceholderText('1234 5678 9012 3456');
     fireEvent.change(cardInput, { target: { value: '1234567890123456' } });
 
-    expect(onPaymentDataChange).toHaveBeenCalledWith('cardNumber', '1234 5678 9012 3456');
+    expect(onPaymentDataChange).toHaveBeenCalledWith(
+      'cardNumber',
+      '1234 5678 9012 3456'
+    );
   });
 
   it('calls onPaymentDataChange when cardholder name is changed', () => {
@@ -154,7 +161,10 @@ describe('PaymentForm', () => {
     const nameInput = screen.getByPlaceholderText('Como aparece en la tarjeta');
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
 
-    expect(onPaymentDataChange).toHaveBeenCalledWith('cardholderName', 'John Doe');
+    expect(onPaymentDataChange).toHaveBeenCalledWith(
+      'cardholderName',
+      'John Doe'
+    );
   });
 
   it('calls onPaymentDataChange when expiry month is changed', () => {
@@ -300,10 +310,16 @@ describe('PaymentForm', () => {
 
     // Test various card number formats
     fireEvent.change(cardInput, { target: { value: '1234567890123456' } });
-    expect(onPaymentDataChange).toHaveBeenCalledWith('cardNumber', '1234 5678 9012 3456');
+    expect(onPaymentDataChange).toHaveBeenCalledWith(
+      'cardNumber',
+      '1234 5678 9012 3456'
+    );
 
     fireEvent.change(cardInput, { target: { value: '1234-5678-9012-3456' } });
-    expect(onPaymentDataChange).toHaveBeenCalledWith('cardNumber', '1234 5678 9012 3456');
+    expect(onPaymentDataChange).toHaveBeenCalledWith(
+      'cardNumber',
+      '1234 5678 9012 3456'
+    );
   });
 
   it('has proper input attributes for accessibility and autofill', () => {

@@ -1,5 +1,10 @@
-
-export const DotLottieReact = ({ src, loop, autoplay, style, ...props }: any) => (
+export const DotLottieReact = ({
+  src,
+  loop,
+  autoplay,
+  style,
+  ...props
+}: any) => (
   <div
     data-testid="lottie-animation"
     data-src={src}

@@ -5,7 +5,7 @@ import type { CartItem } from '../../../../core/contexts/cart-context';
 
 // Mock utility functions
 jest.mock('../../../../core/utils/money.utils', () => ({
-  formatMoney: jest.fn((amount: number) => `$${amount}`)
+  formatMoney: jest.fn((amount: number) => `$${amount}`),
 }));
 
 const mockItems: CartItem[] = [
@@ -107,7 +107,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const confirmButton = screen.getByRole('button', { name: /✨ Confirmar Compra/i });
+    const confirmButton = screen.getByRole('button', {
+      name: /✨ Confirmar Compra/i,
+    });
     expect(confirmButton).toBeInTheDocument();
     expect(confirmButton).not.toBeDisabled();
   });
@@ -124,7 +126,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const confirmButton = screen.getByRole('button', { name: /Complete los datos de pago/i });
+    const confirmButton = screen.getByRole('button', {
+      name: /Complete los datos de pago/i,
+    });
     expect(confirmButton).toBeInTheDocument();
     expect(confirmButton).toBeDisabled();
   });
@@ -141,7 +145,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const confirmButton = screen.getByRole('button', { name: /Procesando compra.../i });
+    const confirmButton = screen.getByRole('button', {
+      name: /Procesando compra.../i,
+    });
     expect(confirmButton).toBeInTheDocument();
     expect(confirmButton).toBeDisabled();
   });
@@ -153,7 +159,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const continueButton = screen.getByRole('button', { name: /← Continuar Comprando/i });
+    const continueButton = screen.getByRole('button', {
+      name: /← Continuar Comprando/i,
+    });
     expect(continueButton).toBeInTheDocument();
     expect(continueButton).not.toBeDisabled();
   });
@@ -170,7 +178,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const continueButton = screen.getByRole('button', { name: /← Continuar Comprando/i });
+    const continueButton = screen.getByRole('button', {
+      name: /← Continuar Comprando/i,
+    });
     expect(continueButton).toBeDisabled();
   });
 
@@ -187,7 +197,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const confirmButton = screen.getByRole('button', { name: /✨ Confirmar Compra/i });
+    const confirmButton = screen.getByRole('button', {
+      name: /✨ Confirmar Compra/i,
+    });
     fireEvent.click(confirmButton);
 
     expect(onConfirmPurchase).toHaveBeenCalledTimes(1);
@@ -206,7 +218,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const continueButton = screen.getByRole('button', { name: /← Continuar Comprando/i });
+    const continueButton = screen.getByRole('button', {
+      name: /← Continuar Comprando/i,
+    });
     fireEvent.click(continueButton);
 
     expect(onContinueShopping).toHaveBeenCalledTimes(1);
@@ -226,7 +240,9 @@ describe('OrderSummary', () => {
       </TestWrapper>
     );
 
-    const confirmButton = screen.getByRole('button', { name: /Complete los datos de pago/i });
+    const confirmButton = screen.getByRole('button', {
+      name: /Complete los datos de pago/i,
+    });
     fireEvent.click(confirmButton);
 
     expect(onConfirmPurchase).not.toHaveBeenCalled();
@@ -303,8 +319,12 @@ describe('OrderSummary', () => {
     expect(screen.getByText('Cargos por servicio')).toBeInTheDocument();
     expect(screen.getByText('¡Gratis!')).toBeInTheDocument();
     expect(screen.getByText('Total a pagar')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /✨ Confirmar Compra/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /← Continuar Comprando/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /✨ Confirmar Compra/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /← Continuar Comprando/i })
+    ).toBeInTheDocument();
   });
 
   it('has different button states based on loading and validity', () => {
@@ -326,7 +346,11 @@ describe('OrderSummary', () => {
 
     rerender(
       <TestWrapper>
-        <OrderSummary {...defaultProps} loading={false} isPaymentValid={false} />
+        <OrderSummary
+          {...defaultProps}
+          loading={false}
+          isPaymentValid={false}
+        />
       </TestWrapper>
     );
 

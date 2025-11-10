@@ -71,7 +71,9 @@ describe('ErrorState', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('¿Necesitas ayuda? Contacta al soporte técnico')).toBeInTheDocument();
+    expect(
+      screen.getByText('¿Necesitas ayuda? Contacta al soporte técnico')
+    ).toBeInTheDocument();
   });
 
   it('renders "Volver al Inicio" button', () => {
@@ -103,7 +105,8 @@ describe('ErrorState', () => {
   });
 
   it('handles long error messages', () => {
-    const longErrorMessage = 'This is a very long error message that should be displayed properly even when it contains a lot of text and might wrap to multiple lines in the UI component.';
+    const longErrorMessage =
+      'This is a very long error message that should be displayed properly even when it contains a lot of text and might wrap to multiple lines in the UI component.';
 
     render(
       <TestWrapper>
@@ -127,7 +130,9 @@ describe('ErrorState', () => {
     expect(screen.getByText('Ticket Inválido')).toBeInTheDocument();
     expect(screen.getByText('ERROR DE VALIDACIÓN')).toBeInTheDocument();
     // The empty error message should still render the container
-    expect(screen.getByText('¿Necesitas ayuda? Contacta al soporte técnico')).toBeInTheDocument();
+    expect(
+      screen.getByText('¿Necesitas ayuda? Contacta al soporte técnico')
+    ).toBeInTheDocument();
   });
 
   it('has correct styling and layout structure', () => {
@@ -144,7 +149,9 @@ describe('ErrorState', () => {
     expect(screen.getByText('❌ ACCESO DENEGADO')).toBeInTheDocument();
     expect(screen.getByText('ERROR DE VALIDACIÓN')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /volver al inicio/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /volver al inicio/i })
+    ).toBeInTheDocument();
   });
 
   it('displays special characters in error message correctly', () => {

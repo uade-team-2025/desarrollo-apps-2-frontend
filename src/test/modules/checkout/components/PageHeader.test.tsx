@@ -24,7 +24,9 @@ describe('PageHeader', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Revisa tu pedido y confirma la compra de tus entradas')).toBeInTheDocument();
+    expect(
+      screen.getByText('Revisa tu pedido y confirma la compra de tus entradas')
+    ).toBeInTheDocument();
   });
 
   it('renders without crashing', () => {
@@ -49,6 +51,8 @@ describe('PageHeader', () => {
 
     // Check for key elements
     expect(screen.getByText('Finalizar Compra')).toBeInTheDocument();
-    expect(screen.getByText('Revisa tu pedido y confirma la compra de tus entradas')).toBeInTheDocument();
+    expect(
+      screen.getByText('Revisa tu pedido y confirma la compra de tus entradas')
+    ).toBeInTheDocument();
   });
 });

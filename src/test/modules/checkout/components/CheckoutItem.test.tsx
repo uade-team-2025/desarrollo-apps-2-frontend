@@ -5,11 +5,11 @@ import type { CartItem } from '../../../../core/contexts/cart-context';
 
 // Mock utility functions
 jest.mock('../../../../core/utils/date.utils', () => ({
-  formatIsoDate: jest.fn((_date: string) => '15 de enero de 2024')
+  formatIsoDate: jest.fn((_date: string) => '15 de enero de 2024'),
 }));
 
 jest.mock('../../../../core/utils/money.utils', () => ({
-  formatMoney: jest.fn((amount: number) => `$${amount}`)
+  formatMoney: jest.fn((amount: number) => `$${amount}`),
 }));
 
 const mockCartItem: CartItem = {
@@ -165,7 +165,8 @@ describe('CheckoutItem', () => {
   it('handles long event names', () => {
     const longNameItem = {
       ...mockCartItem,
-      eventName: 'Festival Internacional de Música Clásica y Contemporánea 2024',
+      eventName:
+        'Festival Internacional de Música Clásica y Contemporánea 2024',
     };
 
     render(
@@ -174,7 +175,11 @@ describe('CheckoutItem', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Festival Internacional de Música Clásica y Contemporánea 2024')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Festival Internacional de Música Clásica y Contemporánea 2024'
+      )
+    ).toBeInTheDocument();
   });
 
   it('handles long cultural place names', () => {
@@ -189,7 +194,9 @@ describe('CheckoutItem', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Centro Cultural Municipal de las Artes y la Cultura')).toBeInTheDocument();
+    expect(
+      screen.getByText('Centro Cultural Municipal de las Artes y la Cultura')
+    ).toBeInTheDocument();
   });
 
   it('renders without crashing', () => {

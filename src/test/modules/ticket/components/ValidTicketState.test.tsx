@@ -87,7 +87,8 @@ describe('ValidTicketState', () => {
     expect(screen.getByText('VALIDADO EL')).toBeInTheDocument();
 
     // Check that a formatted date is displayed (the exact format may vary by locale)
-    const dateRegex = /\d{1,2}\s+de\s+\w+\s+de\s+\d{4},?\s+\d{1,2}:\d{2}|\d{1,2}\/\d{1,2}\/\d{4},?\s+\d{1,2}:\d{2}/;
+    const dateRegex =
+      /\d{1,2}\s+de\s+\w+\s+de\s+\d{4},?\s+\d{1,2}:\d{2}|\d{1,2}\/\d{1,2}\/\d{4},?\s+\d{1,2}:\d{2}/;
     const dateElements = screen.getAllByText(dateRegex);
     expect(dateElements.length).toBeGreaterThan(0);
   });
@@ -170,8 +171,12 @@ describe('ValidTicketState', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('event-with-very-long-identifier-1234567890')).toBeInTheDocument();
-    expect(screen.getByText('user-with-very-long-identifier-abcdefghij')).toBeInTheDocument();
+    expect(
+      screen.getByText('event-with-very-long-identifier-1234567890')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('user-with-very-long-identifier-abcdefghij')
+    ).toBeInTheDocument();
   });
 
   it('handles special characters in ticket data', () => {

@@ -1,4 +1,7 @@
-import { formatCardNumber, isPaymentValid } from '../../../modules/checkout/checkout.utils';
+import {
+  formatCardNumber,
+  isPaymentValid,
+} from '../../../modules/checkout/checkout.utils';
 import type { PaymentData } from '../../../modules/checkout/checkout.utils';
 
 describe('checkout.utils', () => {
