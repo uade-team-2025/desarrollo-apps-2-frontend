@@ -1,25 +1,9 @@
 import { Box, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+import { toaster } from '../../core/components/ui/toaster';
 import { useAuth } from '../../core/contexts/auth-context';
-import type { User } from '../../core/login/login.api';
-import { base64UrlDecode } from './auth-callback.utils';
-
-// Función para decodificar JWT sin verificar la firma
-const decodeJWT = (token: string) => {
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      throw new Error('Token JWT inválido');
-    }
-
-    const payload = parts[1];
-    const decoded = JSON.parse(base64UrlDecode(payload));
-    return decoded;
-  } catch (error) {
-    throw new Error('Error al decodificar el token JWT');
-  }
-};
+import { decodeJWT, mapJWTToUser } from '../../core/utils/jwt.utils';
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
@@ -29,31 +13,54 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        const token = searchParams.get('token');
+        // Get token from URL - searchParams.get automatically URL-decodes
+        let token = searchParams.get('token');
 
         if (!token) {
           throw new Error('Token no encontrado en la URL');
         }
 
+        // Trim any whitespace that might have been introduced
+        token = token.trim();
+
+        // Validate token format (should have 3 parts separated by dots)
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+          console.error('Token JWT inválido: número de partes incorrecto', {
+            partsCount: parts.length,
+            tokenLength: token.length,
+            tokenPreview: token.substring(0, 50) + '...',
+          });
+          throw new Error(`Token JWT inválido: se esperaban 3 partes, se encontraron ${parts.length}`);
+        }
+
+        // Decode JWT using the centralized utility
         const decodedToken = decodeJWT(token);
 
-        const userData: User = {
-          id: decodedToken.sub || decodedToken.id,
-          name: decodedToken.name,
-          email: decodedToken.email,
-          role: decodedToken.role,
-          createdAt: decodedToken.iat
-            ? new Date(decodedToken.iat * 1000).toISOString()
-            : undefined,
-        };
+        if (!decodedToken) {
+          throw new Error('No se pudo decodificar el token JWT');
+        }
+
+        // Map decoded token to User format
+        const userData = mapJWTToUser(decodedToken);
+
+        // Add createdAt if available
+        if (decodedToken.iat) {
+          userData.createdAt = new Date(decodedToken.iat * 1000).toISOString();
+        }
 
         login(userData, token);
       } catch (err) {
         console.error('Error during authentication callback:', err);
+        toaster.create({
+          title: 'Error de autenticación',
+          description: err instanceof Error ? err.message : 'Hubo un problema al procesar el token de autenticación',
+          type: 'error',
+        });
       } finally {
         setTimeout(() => {
           window.location.href = '/';
-        }, 0);
+        }, 1000);
       }
     };
 

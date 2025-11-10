@@ -143,22 +143,55 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { token: receivedToken } = event.data;
       if (receivedToken) {
         try {
+          // Trim any whitespace that might have been introduced
+          let token = receivedToken.trim();
+
+          // Validate token format (should have 3 parts separated by dots)
+          const parts = token.split('.');
+          if (parts.length !== 3) {
+            console.error(
+              'Token JWT inválido de LDAP: número de partes incorrecto',
+              {
+                partsCount: parts.length,
+                tokenLength: token.length,
+              }
+            );
+            toaster.create({
+              title: 'Error de autenticación',
+              description: 'El formato del token recibido no es válido',
+              type: 'error',
+            });
+            return;
+          }
+
           // Guardar el token
-          setStoredToken(receivedToken);
-          setToken(receivedToken);
+          setStoredToken(token);
+          setToken(token);
 
           // Validar el token
-          validateLDAPToken(receivedToken).then(({ success }) => {
+          validateLDAPToken(token).then(({ success }) => {
             if (success) {
               // Decodificar y mapear el JWT
-              const decoded = decodeJWT(receivedToken);
+              const decoded = decodeJWT(token);
               if (decoded) {
                 const userData = mapJWTToUser(decoded);
-                login(userData, receivedToken);
+                // Add createdAt if available
+                if (decoded.iat) {
+                  userData.createdAt = new Date(
+                    decoded.iat * 1000
+                  ).toISOString();
+                }
+                login(userData, token);
                 toaster.create({
                   title: 'Sesión iniciada',
                   description: `Bienvenido, ${userData.name || userData.email}`,
                   type: 'success',
+                });
+              } else {
+                toaster.create({
+                  title: 'Error de autenticación',
+                  description: 'No se pudo decodificar el token JWT',
+                  type: 'error',
                 });
               }
             } else {
