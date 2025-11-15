@@ -80,13 +80,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     window.open(loginUrl, 'LoginPopup', 'width=600,height=700');
   }, []);
 
-  // Validar token al iniciar la aplicación (solo para LDAP)
-  // Google ya maneja todo en auth-callback.tsx, no necesita validación aquí
   useEffect(() => {
     const validateAuth = async () => {
-      // Solo validar si hay token pero NO hay usuario (caso LDAP)
       if (token && !user) {
-        // Verificar si el token está expirado localmente primero
+        const decoded = decodeJWT(token);
+        if (!decoded) {
+          console.error('No se pudo decodificar el token');
+          logout();
+          return;
+        }
+
+        if (decoded.isGoogleUser === true) {
+          return;
+        }
+
         if (isTokenExpired(token)) {
           toaster.create({
             title: 'Sesión expirada',
@@ -98,21 +105,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           return;
         }
 
-        // Decodificar el token para verificar si es de Google o LDAP
-        const decoded = decodeJWT(token);
-        if (!decoded) {
-          console.error('No se pudo decodificar el token');
-          logout();
-          return;
-        }
-
-        // Si es un token de Google, no hacer nada (ya fue manejado en callback)
-        // Solo procesar tokens de LDAP
-        if (decoded.isGoogleUser === true) {
-          return;
-        }
-
-        // Validar token de LDAP con el backend
         const { success } = await validateLDAPToken(token);
         if (success) {
           try {
