@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Text, VStack } from '@chakra-ui/react';
+import { Alert, Box, Grid, Stack, Text, VStack } from '@chakra-ui/react';
 import { FiXCircle } from 'react-icons/fi';
 import { useParams } from 'react-router';
 import { LoadingIndicator } from '../../core/components/ui/loading-indicator';
@@ -101,6 +101,14 @@ export const SingleEvent = () => {
       />
 
       <Box mx="auto" px={4} position="relative">
+        {!event.isActive && (
+          <Alert.Root status="warning" mb={6} borderRadius="md">
+            <Text fontWeight="semibold">
+              Este evento no está disponible actualmente.
+            </Text>
+          </Alert.Root>
+        )}
+
         <Stack mb={6} gap={6}>
           <Maps
             coordinates={{
@@ -132,6 +140,7 @@ export const SingleEvent = () => {
               culturalPlaceName={event.culturalPlaceId.name}
               tickets={event.ticketTypes}
               isLogged={isLogged}
+              isEventActive={event.isActive}
             />
           </VStack>
 

@@ -192,19 +192,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                   description: `Bienvenido, ${userData.name || userData.email}`,
                   type: 'success',
                 });
-              } else {
-                toaster.create({
-                  title: 'Error de autenticación',
-                  description: 'No se pudo decodificar el token JWT',
-                  type: 'error',
-                });
               }
-            } else {
-              toaster.create({
-                title: 'Error de autenticación',
-                description: 'El token recibido no es válido',
-                type: 'error',
-              });
             }
           });
         } catch (e) {

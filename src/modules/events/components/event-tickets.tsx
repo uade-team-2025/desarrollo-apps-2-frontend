@@ -18,6 +18,7 @@ interface EventTicketsProps {
   culturalPlaceName: string;
   tickets: TicketType[];
   isLogged: boolean;
+  isEventActive: boolean;
 }
 
 export const EventTickets = ({
@@ -28,6 +29,7 @@ export const EventTickets = ({
   culturalPlaceName,
   tickets,
   isLogged,
+  isEventActive,
 }: EventTicketsProps) => {
   const { addToCart, isInCart, getItemQuantity } = useCart();
 
@@ -36,6 +38,9 @@ export const EventTickets = ({
   );
 
   const handleAddToCart = (ticket: TicketType) => {
+    if (!isEventActive) {
+      return;
+    }
     addToCart({
       eventId,
       eventName,
@@ -101,7 +106,7 @@ export const EventTickets = ({
                     </Text>
 
                     <Button
-                      disabled={!isLogged}
+                      disabled={!isLogged || !isEventActive}
                       colorPalette="brand"
                       size="md"
                       onClick={() => handleAddToCart(ticket)}

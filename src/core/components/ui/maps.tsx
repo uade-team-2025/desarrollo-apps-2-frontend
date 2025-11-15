@@ -58,16 +58,18 @@ export const Maps = ({
 
   return (
     <Card.Root>
-      <Card.Header>
-        <Card.Title>
-          <HStack gap={2}>
-            <Box as={FaLocationDot} color="brand.500" />
-            <Text fontSize="xl" fontWeight="bold" color="brand.700">
-              {cardTitle}
-            </Text>
-          </HStack>
-        </Card.Title>
-      </Card.Header>
+      {cardTitle && (
+        <Card.Header>
+          <Card.Title>
+            <HStack gap={2}>
+              <Box as={FaLocationDot} color="brand.500" />
+              <Text fontSize="xl" fontWeight="bold" color="brand.700">
+                {cardTitle}
+              </Text>
+            </HStack>
+          </Card.Title>
+        </Card.Header>
+      )}
       <Card.Body>
         <MapContainer
           center={center}
