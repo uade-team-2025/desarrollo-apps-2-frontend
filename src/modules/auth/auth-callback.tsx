@@ -1,71 +1,73 @@
 import { Box, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { toaster } from '../../core/components/ui/toaster';
-import { useAuth } from '../../core/contexts/auth-context';
-import { decodeJWT, mapJWTToUser } from '../../core/utils/jwt.utils';
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const { login } = useAuth();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Get token from URL - searchParams.get automatically URL-decodes
+        // Extract token from URL - for Google auth, backend already validated the user
         let token = searchParams.get('token');
 
+        // Fallback: extract directly from window.location if searchParams fails
         if (!token) {
-          throw new Error('Token no encontrado en la URL');
+          const urlParams = new URLSearchParams(window.location.search);
+          token = urlParams.get('token');
         }
 
-        // Trim any whitespace that might have been introduced
+        // Another fallback: parse from window.location.search directly
+        if (!token) {
+          const match = window.location.search.match(/[?&]token=([^&]+)/);
+          if (match && match[1]) {
+            token = decodeURIComponent(match[1]);
+          }
+        }
+
+        if (!token) {
+          console.error('Token no encontrado en la URL');
+          toaster.create({
+            title: 'Error de autenticación',
+            description: 'No se encontró el token en la URL',
+            type: 'error',
+          });
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+          return;
+        }
+
+        // Trim any whitespace
         token = token.trim();
 
-        // Validate token format (should have 3 parts separated by dots)
-        const parts = token.split('.');
-        if (parts.length !== 3) {
-          console.error('Token JWT inválido: número de partes incorrecto', {
-            partsCount: parts.length,
-            tokenLength: token.length,
-            tokenPreview: token.substring(0, 50) + '...',
-          });
-          throw new Error(`Token JWT inválido: se esperaban 3 partes, se encontraron ${parts.length}`);
-        }
+        // For Google auth: just save the token
+        // The auth context will validate and decode it when the app loads
+        // Store token in localStorage directly
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_isLogged', 'true');
 
-        // Decode JWT using the centralized utility
-        const decodedToken = decodeJWT(token);
-
-        if (!decodedToken) {
-          throw new Error('No se pudo decodificar el token JWT');
-        }
-
-        // Map decoded token to User format
-        const userData = mapJWTToUser(decodedToken);
-
-        // Add createdAt if available
-        if (decodedToken.iat) {
-          userData.createdAt = new Date(decodedToken.iat * 1000).toISOString();
-        }
-
-        login(userData, token);
+        // Redirect to home - auth context will handle validation on mount
+        window.location.href = '/';
       } catch (err) {
         console.error('Error during authentication callback:', err);
         toaster.create({
           title: 'Error de autenticación',
-          description: err instanceof Error ? err.message : 'Hubo un problema al procesar el token de autenticación',
+          description:
+            err instanceof Error
+              ? err.message
+              : 'Hubo un problema al procesar el token de autenticación',
           type: 'error',
         });
-      } finally {
         setTimeout(() => {
           window.location.href = '/';
-        }, 1000);
+        }, 2000);
       }
     };
 
     handleAuthCallback();
-  }, [searchParams, login, navigate]);
+  }, [searchParams]);
 
   return (
     <Box
