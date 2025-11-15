@@ -27,6 +27,25 @@ jest.mock('../../core/components/ui/toaster', () => ({
   Toaster: () => null,
 }));
 
+// Mock LDAP validation functions
+jest.mock('../../core/login/ldap.api', () => ({
+  validateLDAPToken: jest.fn(() => Promise.resolve({ success: false })),
+  getLDAPLoginUrl: jest.fn((url) => `http://test-ldap.com/auth?redirectUrl=${url}`),
+}));
+
+// Mock JWT utils
+const mockIsTokenExpired = jest.fn((_token: string) => false);
+jest.mock('../../core/utils/jwt.utils', () => ({
+  decodeJWT: jest.fn(() => null),
+  isTokenExpired: (token: string) => mockIsTokenExpired(token),
+  mapJWTToUser: jest.fn(() => ({
+    id: '1',
+    name: 'Test User',
+    email: 'test@example.com',
+    role: 'user',
+  })),
+}));
+
 // Mock useAuth
 jest.mock('../../core/contexts/auth-context', () => ({
   ...jest.requireActual('../../core/contexts/auth-context'),
@@ -84,6 +103,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => (
 describe('CartContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsTokenExpired.mockReturnValue(false);
 
     // Reset mocks after clearAllMocks
     mockUseLocalStorage.mockReturnValue({

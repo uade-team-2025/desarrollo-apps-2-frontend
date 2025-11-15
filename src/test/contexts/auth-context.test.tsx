@@ -16,6 +16,33 @@ jest.mock('../../core/hooks/useLocalStorage', () => ({
   })),
 }));
 
+// Mock LDAP validation functions
+jest.mock('../../core/login/ldap.api', () => ({
+  validateLDAPToken: jest.fn(() => Promise.resolve({ success: false })),
+  getLDAPLoginUrl: jest.fn((url) => `http://test-ldap.com/auth?redirectUrl=${url}`),
+}));
+
+// Mock JWT utils
+const mockIsTokenExpired = jest.fn((_token: string) => false);
+const mockDecodeJWT = jest.fn(() => null);
+jest.mock('../../core/utils/jwt.utils', () => ({
+  decodeJWT: () => mockDecodeJWT(),
+  isTokenExpired: (token: string) => mockIsTokenExpired(token),
+  mapJWTToUser: jest.fn(() => ({
+    id: '1',
+    name: 'Test User',
+    email: 'test@example.com',
+    role: 'user',
+  })),
+}));
+
+// Mock toaster
+jest.mock('../../core/components/ui/toaster', () => ({
+  toaster: {
+    create: jest.fn(),
+  },
+}));
+
 import useLocalStorage from '../../core/hooks/useLocalStorage';
 
 const mockUseLocalStorage = useLocalStorage as jest.MockedFunction<
@@ -60,6 +87,8 @@ const Wrapper = ({ children }: { children: any }) => (
 describe('AuthContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsTokenExpired.mockReturnValue(false);
+    mockDecodeJWT.mockReturnValue(null);
     mockUseLocalStorage.mockReturnValue({
       value: null,
       setValue: jest.fn(),
