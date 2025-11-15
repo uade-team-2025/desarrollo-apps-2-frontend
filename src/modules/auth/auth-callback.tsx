@@ -1,73 +1,63 @@
 import { Box, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
-import { toaster } from '../../core/components/ui/toaster';
+import { useAuth } from '../../core/contexts/auth-context';
+import type { User } from '../../core/login/login.api';
+import { base64UrlDecode } from './auth-callback.utils';
+
+// Función para decodificar JWT sin verificar la firma (solo para Google)
+const decodeJWT = (token: string) => {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('Token JWT inválido');
+    }
+
+    const payload = parts[1];
+    const decoded = JSON.parse(base64UrlDecode(payload));
+    return decoded;
+  } catch (error) {
+    throw new Error('Error al decodificar el token JWT');
+  }
+};
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
+  const { login } = useAuth();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Extract token from URL - for Google auth, backend already validated the user
-        let token = searchParams.get('token');
-
-        // Fallback: extract directly from window.location if searchParams fails
-        if (!token) {
-          const urlParams = new URLSearchParams(window.location.search);
-          token = urlParams.get('token');
-        }
-
-        // Another fallback: parse from window.location.search directly
-        if (!token) {
-          const match = window.location.search.match(/[?&]token=([^&]+)/);
-          if (match && match[1]) {
-            token = decodeURIComponent(match[1]);
-          }
-        }
+        const token = searchParams.get('token');
 
         if (!token) {
-          console.error('Token no encontrado en la URL');
-          toaster.create({
-            title: 'Error de autenticación',
-            description: 'No se encontró el token en la URL',
-            type: 'error',
-          });
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
-          return;
+          throw new Error('Token no encontrado en la URL');
         }
 
-        // Trim any whitespace
-        token = token.trim();
+        const decodedToken = decodeJWT(token);
 
-        // For Google auth: just save the token
-        // The auth context will validate and decode it when the app loads
-        // Store token in localStorage directly
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('auth_isLogged', 'true');
+        const userData: User = {
+          id: decodedToken.sub || decodedToken.id,
+          name: decodedToken.name,
+          email: decodedToken.email,
+          role: decodedToken.role,
+          createdAt: decodedToken.iat
+            ? new Date(decodedToken.iat * 1000).toISOString()
+            : undefined,
+        };
 
-        // Redirect to home - auth context will handle validation on mount
-        window.location.href = '/';
+        login(userData, token);
       } catch (err) {
         console.error('Error during authentication callback:', err);
-        toaster.create({
-          title: 'Error de autenticación',
-          description:
-            err instanceof Error
-              ? err.message
-              : 'Hubo un problema al procesar el token de autenticación',
-          type: 'error',
-        });
+      } finally {
         setTimeout(() => {
           window.location.href = '/';
-        }, 2000);
+        }, 0);
       }
     };
 
     handleAuthCallback();
-  }, [searchParams]);
+  }, [searchParams, login]);
 
   return (
     <Box

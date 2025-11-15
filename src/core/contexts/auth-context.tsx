@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     window.open(loginUrl, 'LoginPopup', 'width=600,height=700');
   }, []);
 
-  // Validar token al iniciar la aplicación
+  // Validar token al iniciar la aplicación (solo para LDAP)
   useEffect(() => {
     const validateAuth = async () => {
       if (token) {
@@ -102,32 +102,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Decodificar el token para verificar si es de Google o LDAP
         const decoded = decodeJWT(token);
         if (!decoded) {
-          // No se pudo decodificar el token
           console.error('No se pudo decodificar el token');
           logout();
           return;
         }
 
-        // Si es un token de Google (isGoogleUser: true), el backend ya lo validó
-        // Solo necesitamos decodificarlo y guardar la información del usuario
+        // Si es un token de Google (isGoogleUser: true), no validar con LDAP
+        // Google ya fue manejado en auth-callback.tsx
         if (decoded.isGoogleUser === true) {
-          try {
-            const userData = mapJWTToUser(decoded);
-            if (decoded.iat) {
-              userData.createdAt = new Date(decoded.iat * 1000).toISOString();
-            }
-            setUser(userData);
-            setStoredUser(userData);
-            setIsLogged(true);
-            setStoredIsLogged(true);
-          } catch (e) {
-            console.error('Error decodificando JWT de Google:', e);
-            logout();
-          }
-        } else {
-          // Si es un token de LDAP, validarlo con el backend LDAP primero
-          const { success } = await validateLDAPToken(token);
-          if (success) {
+          // Google tokens are already handled in auth-callback, just ensure user is set
+          if (!user) {
             try {
               const userData = mapJWTToUser(decoded);
               if (decoded.iat) {
@@ -138,26 +122,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               setIsLogged(true);
               setStoredIsLogged(true);
             } catch (e) {
-              console.error('Error decodificando JWT de LDAP:', e);
-              logout();
+              console.error('Error decodificando JWT de Google:', e);
             }
-          } else {
-            toaster.create({
-              title: 'Sesión expirada',
-              description:
-                'Tu sesión expiró. Se abrirá la ventana de login en unos segundos...',
-              type: 'warning',
-            });
-            setTimeout(() => {
-              loginLDAP();
-            }, 5000);
           }
+          return;
+        }
+
+        // Si es un token de LDAP, validarlo con el backend LDAP primero
+        const { success } = await validateLDAPToken(token);
+        if (success) {
+          try {
+            const userData = mapJWTToUser(decoded);
+            if (decoded.iat) {
+              userData.createdAt = new Date(decoded.iat * 1000).toISOString();
+            }
+            setUser(userData);
+            setStoredUser(userData);
+            setIsLogged(true);
+            setStoredIsLogged(true);
+          } catch (e) {
+            console.error('Error decodificando JWT de LDAP:', e);
+            logout();
+          }
+        } else {
+          toaster.create({
+            title: 'Sesión expirada',
+            description:
+              'Tu sesión expiró. Se abrirá la ventana de login en unos segundos...',
+            type: 'warning',
+          });
+          setTimeout(() => {
+            loginLDAP();
+          }, 5000);
         }
       }
     };
 
     validateAuth();
-  }, [token, logout, loginLDAP, setStoredUser, setStoredIsLogged]);
+  }, [token, logout, loginLDAP, setStoredUser, setStoredIsLogged, user]);
 
   // Escuchar mensajes desde la ventana de login LDAP
   useEffect(() => {
