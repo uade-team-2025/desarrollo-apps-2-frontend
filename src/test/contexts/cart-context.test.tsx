@@ -107,6 +107,7 @@ describe('CartContext', () => {
       isUser: true,
       login: jest.fn(),
       logout: jest.fn(),
+      loginLDAP: jest.fn(),
     });
 
     // Clear the mock calls
@@ -156,6 +157,7 @@ describe('CartContext', () => {
         isUser: false,
         login: jest.fn(),
         logout: jest.fn(),
+        loginLDAP: jest.fn(),
       });
 
       render(<TestComponent />, { wrapper: Wrapper });
@@ -208,6 +210,7 @@ describe('CartContext', () => {
         isUser: false,
         login: jest.fn(),
         logout: jest.fn(),
+        loginLDAP: jest.fn(),
       });
 
       const setStoredItems = jest.fn();
