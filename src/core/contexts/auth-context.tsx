@@ -1,7 +1,17 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import useLocalStorage from '../../core/hooks/useLocalStorage';
+import { toaster } from '../components/ui/toaster';
+import { LDAP_AUTH_URL } from '../config/api.config';
+import { getLDAPLoginUrl, validateLDAPToken } from '../login/ldap.api';
 import type { User } from '../login/login.api';
+import { decodeJWT, isTokenExpired, mapJWTToUser } from '../utils/jwt.utils';
 
 export const UserRole = {
   ADMIN: 'admin',
@@ -21,6 +31,7 @@ interface AuthContextType {
   isUser: boolean;
   login: (userData: User, token: string) => void;
   logout: () => void;
+  loginLDAP: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,23 +56,134 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLogged, setIsLogged] = useState<boolean>(storedIsLogged);
   const [token, setToken] = useState<string | null>(storedToken || null);
 
-  const login = (userData: User, token: string) => {
-    setUser(userData);
-    setIsLogged(true);
-    setStoredUser(userData);
-    setStoredIsLogged(true);
-    setToken(token);
-    setStoredToken(token);
-  };
+  const login = useCallback(
+    (userData: User, token: string) => {
+      setUser(userData);
+      setIsLogged(true);
+      setStoredUser(userData);
+      setStoredIsLogged(true);
+      setToken(token);
+      setStoredToken(token);
+    },
+    [setStoredUser, setStoredIsLogged, setStoredToken]
+  );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setIsLogged(false);
     setToken(null);
     removeStoredUser();
     setStoredIsLogged(false);
     setStoredToken(null);
-  };
+  }, [removeStoredUser, setStoredIsLogged, setStoredToken]);
+
+  const loginLDAP = useCallback(() => {
+    const redirectUrl = window.location.origin;
+    const loginUrl = getLDAPLoginUrl(redirectUrl);
+    window.open(loginUrl, 'LoginPopup', 'width=600,height=700');
+  }, []);
+
+  // Validar token al iniciar la aplicación
+  useEffect(() => {
+    const validateAuth = async () => {
+      if (token) {
+        // Verificar si el token está expirado localmente primero
+        if (isTokenExpired(token)) {
+          toaster.create({
+            title: 'Sesión expirada',
+            description:
+              'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+            type: 'warning',
+          });
+          logout();
+          return;
+        }
+
+        // Validar con el backend LDAP
+        const { success } = await validateLDAPToken(token);
+        if (success) {
+          try {
+            const decoded = decodeJWT(token);
+            if (decoded) {
+              const userData = mapJWTToUser(decoded);
+              setUser(userData);
+              setStoredUser(userData);
+              setIsLogged(true);
+              setStoredIsLogged(true);
+            }
+          } catch (e) {
+            console.error('Error decodificando JWT:', e);
+            logout();
+          }
+        } else {
+          toaster.create({
+            title: 'Sesión expirada',
+            description:
+              'Tu sesión expiró. Se abrirá la ventana de login en unos segundos...',
+            type: 'warning',
+          });
+          setTimeout(() => {
+            loginLDAP();
+          }, 5000);
+        }
+      }
+    };
+
+    validateAuth();
+  }, [token, logout, loginLDAP, setStoredUser, setStoredIsLogged]);
+
+  // Escuchar mensajes desde la ventana de login LDAP
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Verificar el origen del mensaje
+      if (event.origin !== LDAP_AUTH_URL) {
+        return;
+      }
+
+      const { token: receivedToken } = event.data;
+      if (receivedToken) {
+        try {
+          // Guardar el token
+          setStoredToken(receivedToken);
+          setToken(receivedToken);
+
+          // Validar el token
+          validateLDAPToken(receivedToken).then(({ success }) => {
+            if (success) {
+              // Decodificar y mapear el JWT
+              const decoded = decodeJWT(receivedToken);
+              if (decoded) {
+                const userData = mapJWTToUser(decoded);
+                login(userData, receivedToken);
+                toaster.create({
+                  title: 'Sesión iniciada',
+                  description: `Bienvenido, ${userData.name || userData.email}`,
+                  type: 'success',
+                });
+              }
+            } else {
+              toaster.create({
+                title: 'Error de autenticación',
+                description: 'El token recibido no es válido',
+                type: 'error',
+              });
+            }
+          });
+        } catch (e) {
+          console.error('Error procesando token LDAP:', e);
+          toaster.create({
+            title: 'Error',
+            description:
+              'Hubo un problema al procesar el token de autenticación',
+            type: 'error',
+          });
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [login, setStoredToken]);
 
   const value: AuthContextType = {
     isLogged,
@@ -73,6 +195,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isUser: user?.role === UserRole.USER,
     login,
     logout,
+    loginLDAP,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

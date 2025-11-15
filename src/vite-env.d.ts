@@ -7,6 +7,8 @@ declare module '*.lottie' {
 
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL?: string;
+  readonly VITE_LDAP_AUTH_URL?: string;
+  readonly VITE_LDAP_VALIDATE_URL?: string;
 }
 
 interface ImportMeta {

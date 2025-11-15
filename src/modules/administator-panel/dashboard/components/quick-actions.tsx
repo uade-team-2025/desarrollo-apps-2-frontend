@@ -6,7 +6,13 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
-import { FiCalendar, FiFileText, FiMapPin, FiUsers } from 'react-icons/fi';
+import {
+  FiBarChart,
+  FiCalendar,
+  FiFileText,
+  FiMapPin,
+  FiUsers,
+} from 'react-icons/fi';
 import { useNavigate } from 'react-router';
 
 export const QuickActions = () => {
@@ -61,6 +67,14 @@ export const QuickActions = () => {
           >
             <Icon as={FiUsers} mr={2} />
             Gestionar Usuarios
+          </Button>
+          <Button
+            colorPalette="orange"
+            size="lg"
+            onClick={() => navigate('/admin/reportes')}
+          >
+            <Icon as={FiBarChart} mr={2} />
+            Ver Reportes
           </Button>
         </SimpleGrid>
       </Stack>

@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router';
 
 // Importar rutas de submódulos administrativos
+import { BI } from './bi/bi';
 import { culturalPlacesManagementRoutes } from './cultural-places/cultural-places.routes';
 import { dashboardRoutes } from './dashboard/dashboard.routes';
 import { eventsManagementRoutes } from './events/events.routes';
@@ -22,7 +23,7 @@ export const adminRoutes: RouteObject[] = [
   ...usersManagementRoutes,
   {
     path: 'reportes',
-    element: <ComingSoon title="Reportes" />,
+    element: <BI />,
   },
   {
     path: 'configuracion',

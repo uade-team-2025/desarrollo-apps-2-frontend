@@ -1,21 +1,15 @@
 import {
-  Alert,
   Box,
   Button,
   Dialog,
-  Field,
   Flex,
-  Input,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { useState } from 'react';
 import boyStudyingAnimation from '../../animations/BoyStudyingScience.lottie';
 import { API_BASE_URL } from '../config/api.config';
 import { useAuth } from '../contexts/auth-context';
-import { useGetDataFromBackend } from '../hooks/useGetDataFromBackend';
-import { loginUser, type User } from './login.api';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -23,40 +17,7 @@ interface LoginModalProps {
 }
 
 export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-
-  const { callback: loginCallback } = useGetDataFromBackend<User>({
-    url: loginUser(),
-    options: {
-      method: 'POST',
-      body: { email },
-    },
-    onSuccess: (user) => {
-      login(user, '');
-      onClose();
-    },
-  });
-
-  const handleSubmit = async () => {
-    setError(null);
-    if (!email || !email.includes('@')) {
-      setError('Ingresa un email válido');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await loginCallback();
-    } catch (err: any) {
-      setError(err?.message || 'No se pudo iniciar sesión');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { loginLDAP } = useAuth();
 
   return (
     <Dialog.Root
@@ -174,88 +135,25 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   Continuar con Google
                 </Button>
 
-                {/* Separador */}
-                <Box w="full" position="relative" textAlign="center" my={2}>
-                  <Text
-                    fontSize="xs"
-                    color="gray.400"
-                    bg="white"
-                    px={3}
-                    position="relative"
-                    zIndex={1}
-                  >
-                    ¿Eres administrador?
-                  </Text>
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left={0}
-                    right={0}
-                    height="1px"
-                    bg="gray.200"
-                    transform="translateY(-50%)"
-                    zIndex={0}
-                  />
-                </Box>
-
-                {/* Opción para administradores */}
-                {!showAdminLogin ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    color="gray.600"
-                    onClick={() => setShowAdminLogin(true)}
-                  >
-                    Acceso de administrador
-                  </Button>
-                ) : (
-                  <VStack gap={3} w="full">
-                    <Field.Root>
-                      <Field.Label>Email de administrador</Field.Label>
-                      <Input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="admin@cultura.com"
-                        type="email"
-                        w="100%"
-                        h={{ base: '40px', md: '48px' }}
-                        fontSize={{ base: 'sm', md: 'md' }}
-                        px={3}
-                      />
-                    </Field.Root>
-
-                    <Button
-                      variant="outline"
-                      colorPalette="brand"
-                      w="full"
-                      size="md"
-                      loading={loading}
-                      loadingText="Verificando..."
-                      onClick={handleSubmit}
-                    >
-                      Ingresar como administrador
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      color="gray.500"
-                      onClick={() => {
-                        setShowAdminLogin(false);
-                        setEmail('');
-                        setError(null);
-                      }}
-                    >
-                      ← Volver
-                    </Button>
-                  </VStack>
-                )}
-
-                {error && (
-                  <Alert.Root status="error">
-                    <Text>{error}</Text>
-                  </Alert.Root>
-                )}
+                {/* Botón LDAP */}
+                <Button
+                  variant="outline"
+                  colorPalette="brand"
+                  w="full"
+                  size="lg"
+                  display="flex"
+                  alignItems="center"
+                  gap={3}
+                  onClick={() => {
+                    loginLDAP();
+                    onClose();
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                  </svg>
+                  Iniciar sesión con LDAP
+                </Button>
               </VStack>
             </Box>
           </Dialog.Body>
