@@ -56,26 +56,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLogged, setIsLogged] = useState<boolean>(storedIsLogged);
   const [token, setToken] = useState<string | null>(storedToken || null);
 
-  const login = useCallback(
-    (userData: User, token: string) => {
-      setUser(userData);
-      setIsLogged(true);
-      setStoredUser(userData);
-      setStoredIsLogged(true);
-      setToken(token);
-      setStoredToken(token);
-    },
-    [setStoredUser, setStoredIsLogged, setStoredToken]
-  );
+  const login = (userData: User, token: string) => {
+    setUser(userData);
+    setIsLogged(true);
+    setStoredUser(userData);
+    setStoredIsLogged(true);
+    setToken(token);
+    setStoredToken(token);
+  };
 
-  const logout = useCallback(() => {
+  const logout = () => {
     setUser(null);
     setIsLogged(false);
     setToken(null);
     removeStoredUser();
     setStoredIsLogged(false);
     setStoredToken(null);
-  }, [removeStoredUser, setStoredIsLogged, setStoredToken]);
+  };
 
   const loginLDAP = useCallback(() => {
     const redirectUrl = window.location.origin;
@@ -84,9 +81,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   // Validar token al iniciar la aplicación (solo para LDAP)
+  // Google ya maneja todo en auth-callback.tsx, no necesita validación aquí
   useEffect(() => {
     const validateAuth = async () => {
-      if (token) {
+      // Solo validar si hay token pero NO hay usuario (caso LDAP)
+      if (token && !user) {
         // Verificar si el token está expirado localmente primero
         if (isTokenExpired(token)) {
           toaster.create({
@@ -107,28 +106,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           return;
         }
 
-        // Si es un token de Google (isGoogleUser: true), no validar con LDAP
-        // Google ya fue manejado en auth-callback.tsx
+        // Si es un token de Google, no hacer nada (ya fue manejado en callback)
+        // Solo procesar tokens de LDAP
         if (decoded.isGoogleUser === true) {
-          // Google tokens are already handled in auth-callback, just ensure user is set
-          if (!user) {
-            try {
-              const userData = mapJWTToUser(decoded);
-              if (decoded.iat) {
-                userData.createdAt = new Date(decoded.iat * 1000).toISOString();
-              }
-              setUser(userData);
-              setStoredUser(userData);
-              setIsLogged(true);
-              setStoredIsLogged(true);
-            } catch (e) {
-              console.error('Error decodificando JWT de Google:', e);
-            }
-          }
           return;
         }
 
-        // Si es un token de LDAP, validarlo con el backend LDAP primero
+        // Validar token de LDAP con el backend
         const { success } = await validateLDAPToken(token);
         if (success) {
           try {
