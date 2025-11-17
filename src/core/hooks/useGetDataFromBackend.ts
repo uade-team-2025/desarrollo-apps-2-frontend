@@ -36,7 +36,7 @@ export function useGetDataFromBackend<T>({
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(executeAutomatically);
   const [error, setError] = useState<string | null>(null);
-  const { role, token } = useAuth();
+  const { role, token, logout } = useAuth();
 
   const callback = useCallback(async () => {
     setLoading(true);
@@ -59,6 +59,21 @@ export function useGetDataFromBackend<T>({
         onSuccess(response.data);
       }
     } catch (err: any) {
+      if (err.response?.status === 401) {
+        toaster.create({
+          title: 'Sesión expirada',
+          description:
+            'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+          type: 'warning',
+        });
+        logout();
+        setError('Sesión expirada');
+        if (onError) {
+          onError(err);
+        }
+        return;
+      }
+
       const errorMessage =
         err.response?.data?.message || err.message || 'An error occurred';
       setError(errorMessage);
@@ -73,7 +88,7 @@ export function useGetDataFromBackend<T>({
     } finally {
       setLoading(false);
     }
-  }, [url, options, role, onSuccess, onError, token]);
+  }, [url, options, role, onSuccess, onError, token, logout]);
 
   useEffect(() => {
     if (executeAutomatically) {

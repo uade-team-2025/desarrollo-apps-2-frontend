@@ -65,14 +65,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setStoredToken(token);
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setIsLogged(false);
     setToken(null);
     removeStoredUser();
     setStoredIsLogged(false);
     setStoredToken(null);
-  };
+  }, [
+    removeStoredUser,
+    setUser,
+    setIsLogged,
+    setToken,
+    setStoredIsLogged,
+    setStoredToken,
+  ]);
 
   const loginLDAP = useCallback(() => {
     const redirectUrl = window.location.origin;
@@ -82,15 +89,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const validateAuth = async () => {
-      if (token && !user) {
+      if (token && typeof token === 'string' && !user) {
         const decoded = decodeJWT(token);
-        if (!decoded) {
-          console.error('No se pudo decodificar el token');
-          logout();
-          return;
-        }
-
-        if (decoded.isGoogleUser === true) {
+        if (!decoded || decoded.isGoogleUser === true) {
+          // Si el token no es válido o es de Google, no se valida
           return;
         }
 
@@ -137,10 +139,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     validateAuth();
   }, [token, logout, loginLDAP, setStoredUser, setStoredIsLogged, user]);
 
-  // Escuchar mensajes desde la ventana de login LDAP
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Verificar el origen del mensaje
       if (event.origin !== LDAP_AUTH_URL) {
         return;
       }
@@ -148,10 +148,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { token: receivedToken } = event.data;
       if (receivedToken) {
         try {
-          // Trim any whitespace that might have been introduced
           let token = receivedToken.trim();
-
-          // Validate token format (should have 3 parts separated by dots)
           const parts = token.split('.');
           if (parts.length !== 3) {
             console.error(
@@ -169,18 +166,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             return;
           }
 
-          // Guardar el token
           setStoredToken(token);
           setToken(token);
 
-          // Validar el token
           validateLDAPToken(token).then(({ success }) => {
             if (success) {
-              // Decodificar y mapear el JWT
               const decoded = decodeJWT(token);
               if (decoded) {
                 const userData = mapJWTToUser(decoded);
-                // Add createdAt if available
                 if (decoded.iat) {
                   userData.createdAt = new Date(
                     decoded.iat * 1000

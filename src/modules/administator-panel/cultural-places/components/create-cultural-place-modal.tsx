@@ -221,6 +221,7 @@ export const CreateCulturalPlaceModal = ({
                         }}
                       >
                         <option value="">Selecciona una categoría</option>
+                        <option value="Festival verde">Festival verde</option>
                         <option value="Centro Cultural">Centro Cultural</option>
                         <option value="Museo">Museo</option>
                         <option value="Teatro">Teatro</option>

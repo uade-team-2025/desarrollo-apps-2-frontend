@@ -15,40 +15,9 @@ import {
   getMobilityStationsForEvent,
   getTruckPositionsForEvent,
   type BikeStation,
+  type Event,
   type Truck,
 } from './single-event.api';
-
-interface Event {
-  _id: string;
-  name: string;
-  description: string;
-  date: string;
-  time: string;
-  culturalPlaceId: {
-    _id: string;
-    name: string;
-    description: string;
-    category: string;
-    characteristics: string[];
-    contact: {
-      address: string;
-      coordinates: { lat: number; lng: number };
-      phone: string;
-      website: string;
-      email: string;
-    };
-    image: string;
-    rating: number;
-  };
-  ticketTypes: {
-    type: string;
-    price: number;
-    initialQuantity: number;
-    soldQuantity: number;
-    isActive: boolean;
-  }[];
-  isActive: boolean;
-}
 
 export const SingleEvent = () => {
   const { id } = useParams<{ id: string }>();

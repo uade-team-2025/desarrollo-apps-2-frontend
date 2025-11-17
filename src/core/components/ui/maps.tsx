@@ -10,6 +10,10 @@ import {
   TileLayer,
   type MapContainerProps,
 } from 'react-leaflet';
+import type {
+  BikeStation,
+  Truck,
+} from '../../../modules/events/single-event.api';
 
 // Fix for default markers in production
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -21,19 +25,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl:
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
-
-type BikeStation = {
-  stationId: string;
-  lt: number;
-  lg: number;
-  count: number;
-};
-
-type Truck = {
-  truckId: string;
-  lat: number;
-  long: number;
-};
 
 type MapsProps = {
   cardTitle?: string;
@@ -89,11 +80,15 @@ export const Maps = ({
           {stations &&
             stations.length > 0 &&
             stations.map((station) => {
+              // Extraer coordenadas: [lng, lat] -> [lat, lng] para Leaflet
+              const [lng, lat] = station.location.coordinates;
+              const position: [number, number] = [lat, lng];
+
               const keyboardIcon = L.divIcon({
                 html: `<div style="
                     font-size: 20px;
                     color: white;
-                    background-color: ${station.count === 0 ? '#ff6565ff' : '#04BF8A'};
+                    background-color: ${station.bikesCount === 0 ? '#ff6565ff' : '#04BF8A'};
                     border-radius: 50%;
                     width: 32px;
                     height: 32px;
@@ -110,14 +105,18 @@ export const Maps = ({
 
               return (
                 <Marker
-                  key={station.stationId}
-                  position={[station.lt, station.lg]}
+                  key={station._id || station.name}
+                  position={position}
                   icon={keyboardIcon}
                 >
                   <Popup>
                     <Box>
-                      <Text fontWeight="bold">{station.stationId}</Text>
-                      <Text fontSize="sm">Bicicletas: {station.count}</Text>
+                      <Text fontWeight="bold">{station.name}</Text>
+                      <Text fontSize="sm">
+                        Bicicletas: {station.bikesCount}
+                      </Text>
+                      <Text fontSize="sm">Capacidad: {station.capacity}</Text>
+                      <Text fontSize="sm">Estado: {station.status}</Text>
                     </Box>
                   </Popup>
                 </Marker>
@@ -127,18 +126,20 @@ export const Maps = ({
           {/* Mostrar camiones (trucks) */}
           {trucks &&
             trucks.length > 0 &&
-            trucks.map((truck) => {
-              // Validar que el truck tenga coordenadas válidas
-              if (
-                !truck ||
-                truck.lat === undefined ||
-                truck.long === undefined
-              ) {
-                return null;
-              }
+            trucks
+              .filter(
+                (truck) =>
+                  truck.punto_actual?.latitud != null &&
+                  truck.punto_actual?.longitud != null
+              )
+              .map((truck) => {
+                const position: [number, number] = [
+                  truck.punto_actual.latitud,
+                  truck.punto_actual.longitud,
+                ];
 
-              const truckIcon = L.divIcon({
-                html: `<div style="
+                const truckIcon = L.divIcon({
+                  html: `<div style="
                     font-size: 20px;
                     color: white;
                     background-color: #FF6B35;
@@ -152,29 +153,36 @@ export const Maps = ({
                   ">
                     🚚
                   </div>`,
-                className: '',
-                iconSize: [36, 36],
-                iconAnchor: [18, 18],
-              });
+                  className: '',
+                  iconSize: [36, 36],
+                  iconAnchor: [18, 18],
+                });
 
-              return (
-                <Marker
-                  key={truck.truckId}
-                  position={[truck.lat, truck.long]}
-                  icon={truckIcon}
-                >
-                  <Popup>
-                    <Box>
-                      <Text fontWeight="bold">{truck.truckId}</Text>
-                      <Text fontSize="sm">
-                        Lat: {truck.lat.toFixed(4)}, Lng:{' '}
-                        {truck.long.toFixed(4)}
-                      </Text>
-                    </Box>
-                  </Popup>
-                </Marker>
-              );
-            })}
+                return (
+                  <Marker
+                    key={truck._id || truck.id_ruta}
+                    position={position}
+                    icon={truckIcon}
+                  >
+                    <Popup>
+                      <Box>
+                        <Text fontWeight="bold">Ruta: {truck.id_ruta}</Text>
+                        <Text fontSize="sm">
+                          Punto: {truck.indice_punto_actual}/
+                          {truck.total_puntos}
+                        </Text>
+                        <Text fontSize="sm">
+                          Progreso: {truck.porcentaje_progreso.toFixed(1)}%
+                        </Text>
+                        <Text fontSize="sm">
+                          Lat: {truck.punto_actual.latitud.toFixed(4)}, Lng:{' '}
+                          {truck.punto_actual.longitud.toFixed(4)}
+                        </Text>
+                      </Box>
+                    </Popup>
+                  </Marker>
+                );
+              })}
         </MapContainer>
       </Card.Body>
     </Card.Root>

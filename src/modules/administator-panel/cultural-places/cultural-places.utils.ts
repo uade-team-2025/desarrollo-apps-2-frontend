@@ -1,7 +1,9 @@
 export const getCategoryColor = (category: string) => {
   switch (category.toLowerCase()) {
-    case 'centro cultural':
+    case 'festival verde':
       return 'green';
+    case 'centro cultural':
+      return 'teal';
     case 'museo':
       return 'purple';
     case 'teatro':
