@@ -176,6 +176,7 @@ export const EditCulturalPlaceModal = ({
                       }}
                     >
                       <option value="">Selecciona una categoría</option>
+                      <option value="Festival verde">Festival verde</option>
                       <option value="Centro Cultural">Centro Cultural</option>
                       <option value="Museo">Museo</option>
                       <option value="Teatro">Teatro</option>
@@ -183,6 +184,7 @@ export const EditCulturalPlaceModal = ({
                       <option value="Galería">Galería</option>
                       <option value="Cine">Cine</option>
                       <option value="Auditorio">Auditorio</option>
+                      <option value="Plaza">Plaza</option>
                     </select>
                   </GridItem>
 

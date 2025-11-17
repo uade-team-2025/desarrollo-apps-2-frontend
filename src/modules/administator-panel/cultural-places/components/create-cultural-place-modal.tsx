@@ -229,6 +229,7 @@ export const CreateCulturalPlaceModal = ({
                         <option value="Galería">Galería</option>
                         <option value="Cine">Cine</option>
                         <option value="Auditorio">Auditorio</option>
+                        <option value="Plaza">Plaza</option>
                       </select>
                     </GridItem>
 
