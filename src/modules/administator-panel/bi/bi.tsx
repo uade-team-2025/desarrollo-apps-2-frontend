@@ -1,4 +1,12 @@
 import { Box, Heading, Stack, Tabs } from '@chakra-ui/react';
+
+const dashboards = [
+  {
+    name: 'Festival Verde',
+    url: 'https://dashboard.marianogimenez.ar/festival-verde?iframe=true',
+  },
+];
+
 export const BI = () => {
   return (
     <Stack gap={6}>
@@ -7,37 +15,43 @@ export const BI = () => {
       </Heading>
 
       <Tabs.Root
-        defaultValue="festival-verde"
+        defaultValue={dashboards[0].name}
         variant={'enclosed'}
         colorPalette="green"
       >
         <Tabs.List>
-          <Tabs.Trigger value="festival-verde">Festival Verde</Tabs.Trigger>
+          {dashboards.map((dashboard) => (
+            <Tabs.Trigger key={dashboard.name} value={dashboard.name}>
+              {dashboard.name}
+            </Tabs.Trigger>
+          ))}
           <Tabs.Indicator />
         </Tabs.List>
 
-        <Tabs.Content value="festival-verde" pt={1}>
-          <Box
-            w="100%"
-            h="100vw"
-            borderWidth="1px"
-            borderRadius="md"
-            overflow="hidden"
-            bg="white"
-          >
-            <iframe
-              src="https://dashboard.marianogimenez.ar/festival-verde?iframe=true"
-              width="100%"
-              height="100%"
-              style={{
-                border: 'none',
-                display: 'block',
-              }}
-              title="Dashboard de Business Intelligence"
-              allow="fullscreen"
-            />
-          </Box>
-        </Tabs.Content>
+        {dashboards.map((dashboard) => (
+          <Tabs.Content key={dashboard.name} value={dashboard.name} pt={1}>
+            <Box
+              w="100%"
+              h="100vw"
+              borderWidth="1px"
+              borderRadius="md"
+              overflow="hidden"
+              bg="white"
+            >
+              <iframe
+                src={dashboard.url}
+                width="100%"
+                height="100%"
+                style={{
+                  border: 'none',
+                  display: 'block',
+                }}
+                title={dashboard.name}
+                allow="fullscreen"
+              />
+            </Box>
+          </Tabs.Content>
+        ))}
       </Tabs.Root>
     </Stack>
   );
