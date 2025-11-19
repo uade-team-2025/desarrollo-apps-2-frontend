@@ -33,14 +33,14 @@ export const SingleEvent = () => {
     url: id ? getMobilityStationsForEvent(id) : '',
     options: { method: 'GET' },
     executeAutomatically: !!id,
-    pollingIntervalSeconds: 10,
+    pollingIntervalSeconds: 5,
   });
 
   const { data: truckPositions } = useGetDataFromBackend<Truck[]>({
     url: id ? getTruckPositionsForEvent(id) : '',
     options: { method: 'GET' },
     executeAutomatically: !!id,
-    pollingIntervalSeconds: 10,
+    pollingIntervalSeconds: 5,
   });
 
   if (loading) {
