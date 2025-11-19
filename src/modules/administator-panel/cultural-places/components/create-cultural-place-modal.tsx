@@ -14,6 +14,7 @@ import {
 import { useId } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { toaster } from '../../../../core/components/ui/toaster';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import { createCulturalPlace } from '../cultural-places.api';
@@ -59,6 +60,7 @@ export const CreateCulturalPlaceModal = ({
   onClose,
   onPlaceCreated,
 }: CreateCulturalPlaceModalProps) => {
+  const { isSupervisor } = useAuth();
   const id = useId();
   const { register, control, handleSubmit, reset, watch } =
     useForm<CulturalPlaceFormData>({
@@ -831,6 +833,7 @@ export const CreateCulturalPlaceModal = ({
                       onClick={addCharacteristicItem}
                       colorPalette="blue"
                       size="sm"
+                      disabled={isSupervisor}
                     >
                       <FiPlus style={{ marginRight: '4px' }} />
                       Agregar
@@ -860,6 +863,7 @@ export const CreateCulturalPlaceModal = ({
                               variant="ghost"
                               size="sm"
                               onClick={() => removeCharacteristicItem(index)}
+                              disabled={isSupervisor}
                             >
                               <FiTrash2 />
                             </IconButton>
@@ -903,6 +907,7 @@ export const CreateCulturalPlaceModal = ({
                 type="submit"
                 loading={creatingPlace}
                 loadingText={'Creando...'}
+                disabled={isSupervisor}
               >
                 Crear Lugar Cultural
               </Button>

@@ -14,8 +14,10 @@ import {
   FiUsers,
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../../../core/contexts/auth-context';
 
 export const QuickActions = () => {
+  const { isSupervisor } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -40,6 +42,7 @@ export const QuickActions = () => {
             colorPalette="green"
             size="lg"
             onClick={() => navigate('/admin/eventos')}
+            disabled={isSupervisor}
           >
             <Icon as={FiCalendar} mr={2} />
             Crear Evento
@@ -48,6 +51,7 @@ export const QuickActions = () => {
             colorPalette="green"
             size="lg"
             onClick={() => navigate('/admin/espacios-culturales')}
+            disabled={isSupervisor}
           >
             <Icon as={FiMapPin} mr={2} />
             Agregar Lugar

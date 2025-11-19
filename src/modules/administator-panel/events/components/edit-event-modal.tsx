@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { toaster } from '../../../../core/components/ui/toaster';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import { formatIsoDate } from '../../../../core/utils/date.utils';
@@ -30,6 +31,7 @@ export const EditEventModal = ({
   onEventUpdated,
   event,
 }: EditEventModalProps) => {
+  const { isSupervisor } = useAuth();
   const { watch, register, control, handleSubmit, reset } =
     useForm<EventFormData>({
       defaultValues: {
@@ -205,6 +207,7 @@ export const EditEventModal = ({
                     variant="outline"
                     onClick={addTicketType}
                     type="button"
+                    disabled={isSupervisor}
                   >
                     <FiPlus style={{ marginRight: '4px' }} />
                     Agregar Tipo
@@ -232,6 +235,7 @@ export const EditEventModal = ({
                             aria-label="Eliminar tipo"
                             onClick={() => removeTicketType(index)}
                             type="button"
+                            disabled={isSupervisor}
                           >
                             <FiTrash2 />
                           </IconButton>
@@ -330,7 +334,7 @@ export const EditEventModal = ({
                 colorPalette="green"
                 type="submit"
                 loading={updatingPlace}
-                disabled={updatingPlace}
+                disabled={updatingPlace || isSupervisor}
               >
                 {updatingPlace ? 'Actualizando...' : 'Actualizar Evento'}
               </Button>

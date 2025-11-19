@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { toaster } from '../../../../core/components/ui/toaster';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import type { CulturalPlace, EventFormData } from '../events.api';
@@ -28,6 +29,7 @@ export const CreateEventModal = ({
   onClose,
   onEventCreated,
 }: CreateEventModalProps) => {
+  const { isSupervisor } = useAuth();
   const { watch, register, control, handleSubmit, reset } =
     useForm<EventFormData>({
       defaultValues: {
@@ -202,6 +204,7 @@ export const CreateEventModal = ({
                     variant="outline"
                     onClick={addTicketType}
                     type="button"
+                    disabled={isSupervisor}
                   >
                     <FiPlus style={{ marginRight: '4px' }} />
                     Agregar Tipo
@@ -229,6 +232,7 @@ export const CreateEventModal = ({
                             aria-label="Eliminar tipo"
                             onClick={() => removeTicketType(index)}
                             type="button"
+                            disabled={isSupervisor}
                           >
                             <FiTrash2 />
                           </IconButton>
@@ -312,6 +316,7 @@ export const CreateEventModal = ({
                 type="submit"
                 loading={isLoadingCreate}
                 loadingText="Creando..."
+                disabled={isSupervisor}
               >
                 Crear Evento
               </Button>

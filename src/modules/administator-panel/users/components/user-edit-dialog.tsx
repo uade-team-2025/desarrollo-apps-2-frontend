@@ -9,6 +9,7 @@ import {
   createListCollection,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { toaster } from '../../../../core/components/ui/toaster';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import type { UpdateUserData, User } from '../users.api';
@@ -28,6 +29,7 @@ export const UserEditDialog = ({
   onClose,
   onUserUpdate,
 }: UserEditDialogProps) => {
+  const { isSupervisor } = useAuth();
   const [formData, setFormData] = useState<UpdateUserData>({
     name: user.name,
     email: user.email,
@@ -154,6 +156,7 @@ export const UserEditDialog = ({
               onClick={updateUserCallback}
               loading={isLoadingUpdateUser}
               loadingText="Guardando..."
+              disabled={isSupervisor}
             >
               Guardar Cambios
             </Button>

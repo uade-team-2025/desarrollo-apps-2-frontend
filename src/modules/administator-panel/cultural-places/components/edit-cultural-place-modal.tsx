@@ -14,6 +14,7 @@ import {
 import { useId } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { toaster } from '../../../../core/components/ui/toaster';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import {
@@ -54,6 +55,7 @@ export const EditCulturalPlaceModal = ({
   onPlaceUpdated,
   place,
 }: EditCulturalPlaceModalProps) => {
+  const { isSupervisor } = useAuth();
   const id = useId();
   const { watch, register, control, handleSubmit, reset } =
     useForm<CulturalPlaceFormData>({
@@ -291,6 +293,7 @@ export const EditCulturalPlaceModal = ({
                         variant="outline"
                         onClick={addCharacteristic}
                         type="button"
+                        disabled={isSupervisor}
                       >
                         <FiPlus style={{ marginRight: '4px' }} />
                         Agregar Característica
@@ -314,6 +317,7 @@ export const EditCulturalPlaceModal = ({
                               aria-label="Eliminar característica"
                               onClick={() => removeCharacteristicItem(index)}
                               type="button"
+                              disabled={isSupervisor}
                             >
                               <FiTrash2 />
                             </IconButton>
@@ -374,6 +378,7 @@ export const EditCulturalPlaceModal = ({
                 type="submit"
                 loading={updatingPlace}
                 loadingText={'Actualizando...'}
+                disabled={isSupervisor}
               >
                 Actualizar
               </Button>

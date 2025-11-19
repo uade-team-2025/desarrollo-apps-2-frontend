@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiEdit, FiMail, FiTrash2, FiUser } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import type { User } from '../users.api';
 import { deleteUser } from '../users.api';
@@ -28,6 +29,7 @@ interface UserCardProps {
 }
 
 export const UserCard = ({ user, onUserUpdate }: UserCardProps) => {
+  const { isSupervisor } = useAuth();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleEdit = () => {
@@ -108,6 +110,7 @@ export const UserCard = ({ user, onUserUpdate }: UserCardProps) => {
                 colorPalette="blue"
                 onClick={handleEdit}
                 aria-label="Editar usuario"
+                disabled={isSupervisor}
               >
                 <Icon as={FiEdit} />
               </IconButton>
@@ -117,7 +120,7 @@ export const UserCard = ({ user, onUserUpdate }: UserCardProps) => {
                 variant="outline"
                 colorPalette="red"
                 onClick={handleDelete}
-                disabled={isLoadingDeleteUser}
+                disabled={isLoadingDeleteUser || isSupervisor}
                 aria-label="Eliminar usuario"
               >
                 <Icon as={FiTrash2} />

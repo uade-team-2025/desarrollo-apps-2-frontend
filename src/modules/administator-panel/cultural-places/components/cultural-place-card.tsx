@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiEdit, FiGlobe, FiMapPin, FiPhone, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import { deleteCulturalPlace } from '../cultural-places.api';
 import { getCategoryColor } from '../cultural-places.utils';
@@ -46,6 +47,7 @@ export const CulturalPlaceCard = ({
   place,
   onDeleted,
 }: CulturalPlaceCardProps) => {
+  const { isSupervisor } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { loading: deleteLoading, callback: onDeleteCulturalPlace } =
@@ -97,6 +99,7 @@ export const CulturalPlaceCard = ({
                 colorPalette="green"
                 variant="outline"
                 onClick={() => setIsEditModalOpen(true)}
+                disabled={isSupervisor}
               >
                 <Icon as={FiEdit} />
               </Button>
@@ -106,6 +109,7 @@ export const CulturalPlaceCard = ({
                 variant="outline"
                 onClick={handleDeletePlace}
                 loading={deleteLoading}
+                disabled={isSupervisor}
               >
                 <Icon as={FiTrash2} />
               </Button>

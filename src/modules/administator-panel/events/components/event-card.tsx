@@ -16,6 +16,7 @@ import {
   FiMapPin,
   FiTrash2,
 } from 'react-icons/fi';
+import { useAuth } from '../../../../core/contexts/auth-context';
 import { useGetDataFromBackend } from '../../../../core/hooks/useGetDataFromBackend';
 import type { Event } from '../events.api';
 import { deleteEvent } from '../events.api';
@@ -27,6 +28,7 @@ interface EventCardProps {
 }
 
 export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
+  const { isSupervisor } = useAuth();
   const { loading: deleteLoading, callback: onDeleteEvent } =
     useGetDataFromBackend({
       url: deleteEvent(event._id),
@@ -72,6 +74,7 @@ export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
                 colorPalette="green"
                 variant="outline"
                 onClick={() => onEdit(event)}
+                disabled={isSupervisor}
               >
                 <Icon as={FiEdit} />
               </Button>
@@ -81,6 +84,7 @@ export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
                 variant="outline"
                 onClick={handleDelete}
                 loading={deleteLoading}
+                disabled={isSupervisor}
               >
                 <Icon as={FiTrash2} />
               </Button>

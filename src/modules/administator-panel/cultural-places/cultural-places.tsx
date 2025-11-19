@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
+import { useAuth } from '../../../core/contexts/auth-context';
 import { LoadingIndicator } from '../../../core/components/ui/loading-indicator';
 import { useGetDataFromBackend } from '../../../core/hooks/useGetDataFromBackend';
 import { CreateCulturalPlaceModal } from './components/create-cultural-place-modal';
@@ -18,6 +19,7 @@ import { CulturalPlaceCard } from './components/cultural-place-card';
 import { getCulturalPlaces, type CulturalPlace } from './cultural-places.api';
 
 export const AdminCulturalPlaces = () => {
+  const { isSupervisor } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const {
@@ -40,7 +42,11 @@ export const AdminCulturalPlaces = () => {
         <Heading size="lg" color="gray.800">
           Gestión de Lugares Culturales
         </Heading>
-        <Button colorPalette="green" onClick={() => setIsCreateModalOpen(true)}>
+        <Button
+          colorPalette="green"
+          onClick={() => setIsCreateModalOpen(true)}
+          disabled={isSupervisor}
+        >
           <Icon as={FiPlus} mr={2} />
           Agregar Lugar
         </Button>
