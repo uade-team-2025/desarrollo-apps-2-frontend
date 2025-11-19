@@ -6,7 +6,11 @@ export const BI = () => {
         Reportes y Business Intelligence
       </Heading>
 
-      <Tabs.Root defaultValue="festival-verde" variant={'enclosed'}>
+      <Tabs.Root
+        defaultValue="festival-verde"
+        variant={'enclosed'}
+        colorPalette="green"
+      >
         <Tabs.List>
           <Tabs.Trigger value="festival-verde">Festival Verde</Tabs.Trigger>
           <Tabs.Indicator />
@@ -22,7 +26,7 @@ export const BI = () => {
             bg="white"
           >
             <iframe
-              src="https://dashboard.marianogimenez.ar/festival-verde"
+              src="https://dashboard.marianogimenez.ar/festival-verde?iframe=true"
               width="100%"
               height="100%"
               style={{
