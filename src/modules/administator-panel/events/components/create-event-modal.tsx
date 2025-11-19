@@ -269,7 +269,7 @@ export const CreateEventModal = ({
                               type="number"
                               {...register(`ticketTypes.${index}.price`, {
                                 required: true,
-                                min: 1,
+                                min: 0,
                                 valueAsNumber: true,
                               })}
                               min="0"

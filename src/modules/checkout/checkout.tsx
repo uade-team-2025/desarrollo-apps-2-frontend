@@ -35,7 +35,8 @@ export const CheckoutPage = () => {
   };
 
   const handleConfirmPurchase = () => {
-    if (!isPaymentValid(paymentData)) {
+    // Solo validar pago si el total es mayor a $0
+    if (totalPrice > 0 && !isPaymentValid(paymentData)) {
       toaster.create({
         title: 'Datos incompletos',
         description: 'Por favor complete todos los campos de pago',
@@ -128,10 +129,12 @@ export const CheckoutPage = () => {
               <CheckoutItem key={item.tempId} item={item} />
             ))}
 
-            <PaymentForm
-              paymentData={paymentData}
-              onPaymentDataChange={handleInputChange}
-            />
+            {totalPrice > 0 && (
+              <PaymentForm
+                paymentData={paymentData}
+                onPaymentDataChange={handleInputChange}
+              />
+            )}
           </Stack>
 
           <OrderSummary
@@ -140,7 +143,7 @@ export const CheckoutPage = () => {
             loading={loading}
             onConfirmPurchase={handleConfirmPurchase}
             onContinueShopping={() => navigate(-1)}
-            isPaymentValid={isPaymentValid(paymentData)}
+            isPaymentValid={totalPrice === 0 || isPaymentValid(paymentData)}
           />
         </Flex>
       </Stack>
