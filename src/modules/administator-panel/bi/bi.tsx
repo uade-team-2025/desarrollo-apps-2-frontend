@@ -1,13 +1,15 @@
 import { Box, Heading, Stack, Tabs } from '@chakra-ui/react';
+import { useAuth } from '../../../core/contexts/auth-context';
 
 const dashboards = [
   {
     name: 'Festival Verde',
-    url: 'https://dashboard.marianogimenez.ar/festival-verde?iframe=true',
+    url: 'https://dashboard.marianogimenez.ar/festival-verde?iframe=true', // siempre mandar iframe=true
   },
 ];
 
 export const BI = () => {
+  const { token } = useAuth();
   return (
     <Stack gap={6}>
       <Heading size="lg" color="gray.800">
@@ -39,7 +41,7 @@ export const BI = () => {
               bg="white"
             >
               <iframe
-                src={dashboard.url}
+                src={dashboard.url + `&token=${token}`}
                 width="100%"
                 height="100%"
                 style={{
