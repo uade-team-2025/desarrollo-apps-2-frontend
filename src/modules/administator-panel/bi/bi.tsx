@@ -6,6 +6,10 @@ const dashboards = [
     name: 'Festival Verde',
     url: 'https://dashboard.marianogimenez.ar/festival-verde?iframe=true', // siempre mandar iframe=true
   },
+  {
+    name: 'Respuesta Climatica',
+    url: 'https://dashboard.marianogimenez.ar/respuesta-climatica?iframe=true',
+  },
 ];
 
 export const BI = () => {
