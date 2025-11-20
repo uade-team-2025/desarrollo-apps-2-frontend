@@ -10,6 +10,10 @@ const dashboards = [
     name: 'Respuesta Climatica',
     url: 'https://dashboard.marianogimenez.ar/respuesta-climatica?iframe=true',
   },
+  {
+    name: 'Alerta Vecinal',
+    url: 'https://dashboard.marianogimenez.ar/alerta-vecinal?login=false&iframe=true',
+  },
 ];
 
 export const BI = () => {
