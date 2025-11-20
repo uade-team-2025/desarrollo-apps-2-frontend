@@ -6,6 +6,8 @@ export interface PopulatedEvent {
   description: string;
   date: string;
   time: string;
+  isActive?: boolean;
+  status?: string;
   culturalPlaceId: {
     _id: string;
     name: string;
