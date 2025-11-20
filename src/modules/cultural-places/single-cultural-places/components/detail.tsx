@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Text, VStack } from '@chakra-ui/react';
+import { Alert, Box, Grid, Stack, Text, VStack } from '@chakra-ui/react';
 import { FiXCircle } from 'react-icons/fi';
 import { useParams } from 'react-router';
 import { LoadingIndicator } from '../../../../core/components/ui/loading-indicator';
@@ -38,6 +38,7 @@ interface CulturalPlace {
   image: string;
   rating: number;
   isActive: boolean;
+  status?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -86,6 +87,18 @@ export const Detail = () => {
       />
 
       <Box mx="auto" px={4} position="relative">
+        {!culturalPlace.isActive && (
+          <Alert.Root status="warning" mb={6} borderRadius="md">
+            <Text fontWeight="semibold">
+              {culturalPlace.status === 'CLOSED_DOWN'
+                ? 'Centro cultural clausurado'
+                : culturalPlace.status === 'TEMPORAL_CLOSED_DOWN'
+                  ? 'Centro cultural cerrado temporalmente'
+                  : 'Este centro cultural no está disponible actualmente.'}
+            </Text>
+          </Alert.Root>
+        )}
+
         <Grid templateColumns={{ base: '1fr', xl: '2fr 1fr' }} gap={6}>
           <VStack gap={2} align="stretch">
             <About longDescription={culturalPlace.description} />
