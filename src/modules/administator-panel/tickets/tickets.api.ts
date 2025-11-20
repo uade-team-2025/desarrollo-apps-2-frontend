@@ -56,22 +56,24 @@ export const getTickets = (filters?: TicketFilters) => {
   if (filters?.userId) params.append('userId', filters.userId);
   if (filters?.ticketType) params.append('ticketType', filters.ticketType);
 
-  return `${API_BASE_URL}/tickets${params.toString() ? `?${params.toString()}` : ''}`;
+  return `${API_BASE_URL}/api/v1/tickets${params.toString() ? `?${params.toString()}` : ''}`;
 };
 
-export const getTicketById = (id: string) => `${API_BASE_URL}/tickets/${id}`;
+export const getTicketById = (id: string) =>
+  `${API_BASE_URL}/api/v1/tickets/${id}`;
 
-export const getTicketStats = () => `${API_BASE_URL}/tickets/stats`;
+export const getTicketStats = () => `${API_BASE_URL}/api/v1/tickets/stats`;
 
 export const getTicketsByStatus = (status: string) =>
-  `${API_BASE_URL}/tickets/status/${status}`;
+  `${API_BASE_URL}/api/v1/tickets/status/${status}`;
 
-export const getActiveTickets = () => `${API_BASE_URL}/tickets/active`;
+export const getActiveTickets = () => `${API_BASE_URL}/api/v1/tickets/active`;
 
 export const updateTicketStatus = (id: string) =>
-  `${API_BASE_URL}/tickets/${id}`;
+  `${API_BASE_URL}/api/v1/tickets/${id}`;
 
 export const cancelTicket = (id: string) =>
-  `${API_BASE_URL}/tickets/${id}/cancel`;
+  `${API_BASE_URL}/api/v1/tickets/${id}/cancel`;
 
-export const useTicket = (id: string) => `${API_BASE_URL}/tickets/${id}/use`;
+export const useTicket = (id: string) =>
+  `${API_BASE_URL}/api/v1/tickets/${id}/use`;
