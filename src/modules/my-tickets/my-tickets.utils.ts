@@ -13,7 +13,21 @@ export const getStatusColor = (status: string) => {
   }
 };
 
-export const getStatusText = (status: string) => {
+export const getStatusText = (
+  status: string,
+  eventData?: { isActive?: boolean; status?: string } | null
+) => {
+  // Si el ticket está activo pero el evento está pausado/cerrado
+  if (status === 'active' && eventData && eventData.isActive === false) {
+    if (eventData.status === 'PAUSED_BY_CLOSURE') {
+      return 'Cancelado';
+    }
+    if (eventData.status === 'TEMPORAL_PAUSED') {
+      return 'Cancelado temporalmente';
+    }
+    return 'Cancelado';
+  }
+
   switch (status) {
     case 'active':
       return 'Activo';

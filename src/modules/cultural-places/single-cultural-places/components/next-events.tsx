@@ -21,6 +21,7 @@ interface Event {
   description: string;
   date: string;
   time: string;
+  isActive: boolean;
   culturalPlaceId: {
     name: string;
   };
@@ -226,6 +227,7 @@ export const NextEvents = () => {
                       colorPalette="brand"
                       w="100%"
                       mt={2}
+                      disabled={!event.isActive}
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/evento/${event._id}`);

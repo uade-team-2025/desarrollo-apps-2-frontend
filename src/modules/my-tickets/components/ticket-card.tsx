@@ -95,13 +95,17 @@ export const TicketCard = ({ ticket }: TicketCardProps) => {
               position="absolute"
               top={3}
               right={3}
-              colorPalette={getStatusColor(ticket.status)}
+              colorPalette={
+                ticket.status === 'active' && eventData && eventData.isActive === false
+                  ? 'red'
+                  : getStatusColor(ticket.status)
+              }
               variant="solid"
               size="sm"
               px={3}
               py={1}
             >
-              {getStatusText(ticket.status)}
+              {getStatusText(ticket.status, eventData)}
             </Badge>
 
             <Box position="absolute" bottom={3} left={3} right={3}>
@@ -149,14 +153,18 @@ export const TicketCard = ({ ticket }: TicketCardProps) => {
                 </Heading>
               </VStack>
               <Badge
-                colorPalette={getStatusColor(ticket.status)}
+                colorPalette={
+                  ticket.status === 'active' && eventData && eventData.isActive === false
+                    ? 'red'
+                    : getStatusColor(ticket.status)
+                }
                 variant="solid"
                 size="sm"
                 px={3}
                 py={1}
                 borderRadius="full"
               >
-                {getStatusText(ticket.status)}
+                {getStatusText(ticket.status, eventData)}
               </Badge>
             </Flex>
 
