@@ -31,5 +31,5 @@ export const getRoute = (
     params.append('point', `${point.lat},${point.lng}`);
   });
 
-  return `${GRAPHHOPPER_URL}/api/1/route?${params.toString()}`;
+  return `${GRAPHHOPPER_URL}/route?${params.toString()}`;
 };
