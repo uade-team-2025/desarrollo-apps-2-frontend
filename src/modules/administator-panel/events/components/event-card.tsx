@@ -52,8 +52,8 @@ export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
   return (
     <Card.Root>
       <Image
-        src={event.culturalPlaceId.image}
-        alt={event.culturalPlaceId.name}
+        src={event.culturalPlaceId?.image}
+        alt={event.culturalPlaceId?.name}
         h="200px"
         w="100%"
         objectFit="cover"
@@ -92,12 +92,12 @@ export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
           </HStack>
 
           <Text fontSize="lg" fontWeight="bold">
-            {event.name}
+            {event?.name}
           </Text>
 
           {event.description && (
             <Text fontSize="sm" color="gray.600">
-              {event.description}
+              {event?.description}
             </Text>
           )}
 
@@ -119,7 +119,7 @@ export const EventCard = ({ event, onEdit, onDeleted }: EventCardProps) => {
             <HStack>
               <Icon as={FiMapPin} color="gray.400" size="sm" />
               <Text fontSize="sm" color="gray.600">
-                {event.culturalPlaceId.name}
+                {event.culturalPlaceId?.name}
               </Text>
             </HStack>
           </Stack>
